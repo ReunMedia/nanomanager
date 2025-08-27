@@ -1,0 +1,50 @@
+{
+    "name": "reun/nanomanager",
+    "description": "Modern and minimalist file manager in a single PHP file",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Reun Media",
+            "email": "company@reun.eu",
+            "homepage": "https://reun.eu"
+        }
+    ],
+    "require": {
+        "php": "^8.0"
+    },
+    "require-dev": {
+        "ergebnis/composer-normalize": "^2.47",
+        "friendsofphp/php-cs-fixer": "^3.86",
+        "pestphp/pest": "^4.0",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-strict-rules": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nanomanager\\": "src/Nanomanager",
+            "Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true,
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            ". vendor/reun/twig-utilities/bin/detect-vite-dev-server.sh && detect_vite localhost:5173 && php -S 0.0.0.0:8080 -t www"
+        ],
+        "lint": [
+            "composer validate",
+            "composer normalize",
+            "vendor/bin/php-cs-fixer fix .",
+            "vendor/bin/phpstan"
+        ],
+        "test": "vendor/bin/pest"
+    }
+}

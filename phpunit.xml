@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Reun Media PHPUnit configuration for Pest
+
+  Run `./vendor/bin/pest \-\-generate-configuration` to create a new file with
+  default configuration.
+
+  @copyright 2020 Reun Media
+
+  @see https://github.com/ReunMedia/php-app-template
+
+  @version 4.0.0
+-->
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd"
+  bootstrap="vendor/autoload.php"
+  colors="true">
+  <testsuites>
+    <testsuite name="Test Suite">
+      <directory suffix="Test.php">tests</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </source>
+</phpunit>
