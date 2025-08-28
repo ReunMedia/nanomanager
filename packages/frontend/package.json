@@ -1,7 +1,9 @@
 {
-  "name": "frontend",
-  "version": "0.0.1",
+  "name": "nanomanager",
+  "version": "0.1.0",
   "private": true,
+  "license": "MIT",
+  "author": "Reun Media <company@reun.eu> (https://reun.eu)",
   "type": "module",
   "scripts": {
     "build": "vite build",
