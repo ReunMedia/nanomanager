@@ -22,3 +22,7 @@ tasks:
     deps:
       - "lintComposerJson"
       - "format"
+
+  test:
+    command:
+      - "vendor/bin/pest"

@@ -41,3 +41,8 @@ tasks:
     deps:
       - "lintPkgJson"
       - "format"
+
+  test:
+    script: "bun test"
+    inputs:
+      - "@group(sources)"
