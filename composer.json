@@ -13,6 +13,7 @@
         "php": "^8.0"
     },
     "require-dev": {
+        "buggregator/trap": "^1.13",
         "ergebnis/composer-normalize": "^2.47",
         "friendsofphp/php-cs-fixer": "^3.86",
         "pestphp/pest": "^4.0",
