@@ -6,6 +6,9 @@ namespace Nanomanager;
 
 class Nanomanager
 {
+    /**
+     * @var resource
+     */
     private $handle;
 
     /**
@@ -13,10 +16,11 @@ class Nanomanager
      */
     public function __construct(private string $directory)
     {
-        $this->handle = opendir($directory);
-        if (!$this->handle) {
+        $handle = opendir($directory);
+        if (false === $handle) {
             throw new \RuntimeException("Unable to open directory '{$directory}");
         }
+        $this->handle = $handle;
     }
 
     /**
@@ -28,8 +32,8 @@ class Nanomanager
     {
         $files = [];
         while ($filename = readdir($this->handle)) {
-            if ("." == $filename
-                || ".." == $filename
+            if ("." === $filename
+                || ".." === $filename
                 || is_dir("{$this->directory}/{$filename}")
             ) {
                 continue;
