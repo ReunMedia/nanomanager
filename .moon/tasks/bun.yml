@@ -1,0 +1,50 @@
+fileGroups:
+  sources:
+    - "public/**/*.js"
+    - "src/**/*"
+    - "tests/**/*"
+
+tasks:
+  format:
+    command:
+      - "prettier"
+      # Use the same config for the entire repo
+      - "--config"
+      - "@in(0)"
+      # Use .prettierignore...
+      - "--ignore-path"
+      - "@in(1)"
+      # ... and .gitignore
+      - "--ignore-path"
+      - "@in(2)"
+      # Fail for unformatted code
+      - "--check"
+      # Run in current dir
+      - "."
+    inputs:
+      # Use project-specific configs that extend root config
+      - "prettier.config.mjs"
+      # Use global .prettierignore and .gitignore
+      - "/.prettierignore"
+      - "/.gitignore"
+      - "@group(sources)"
+      # Config and other files
+      - "**/*.{md,mdx,yml,yaml,json,js,mjs,ts}"
+
+  lintPkgJson:
+    command: "npmPkgJsonLint ."
+    inputs:
+      - "**/package.json"
+      - "/package.json"
+      - "/.npmpackagejsonlintrc.json"
+
+  lint:
+    command:
+      - "eslint"
+    inputs:
+      - "@group(sources)"
+      - "**/eslint.config.mjs"
+      - "/eslint.config.mjs"
+    deps:
+      - "lintPkgJson"
+      - "format"

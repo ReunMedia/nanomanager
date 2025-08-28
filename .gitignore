@@ -81,3 +81,11 @@ phpstan.neon
 # moon
 .moon/cache
 .moon/docker
+
+# Svelte
+.output
+.vercel
+.netlify
+.wrangler
+.svelte-kit
+build
