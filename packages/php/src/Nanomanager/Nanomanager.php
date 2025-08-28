@@ -51,12 +51,40 @@ class Nanomanager
             ob_start();
         }
 
-        echo "<h1>Hello World!</h1>";
+        $operation = $_GET["operation"];
+
+        \trap($operation);
+
+        if (is_string($operation)) {
+            $this->runOperation($operation);
+        }
 
         if ($returnOutput) {
             $output = ob_get_clean();
         }
 
         return (is_string($output)) ? $output : "";
+    }
+
+    private function runOperation(string $operation): void
+    {
+        // All operation responses are returned as JSON
+        header('Content-Type: application/json; charset=utf-8');
+
+        switch ($operation) {
+            case 'listFiles':
+                echo json_encode(["files" => $this->listFiles()]);
+
+                break;
+
+            default:
+                http_response_code(400);
+
+                echo json_encode([
+                    "error" => "Unsupported operation '{$operation}'",
+                ]);
+
+                break;
+        }
     }
 }

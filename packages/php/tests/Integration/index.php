@@ -8,6 +8,9 @@ use Nanomanager\Nanomanager;
 // single-file distribution.
 require_once __DIR__."/../../vendor/autoload.php";
 
+// Disable CORS in development
+header('Access-Control-Allow-Origin: *');
+
 require __DIR__."/../../src/Nanomanager/Nanomanager.php";
 
 (new Nanomanager(__DIR__."/../fixtures/uploads"))->run();
