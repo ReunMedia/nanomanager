@@ -1,4 +1,0 @@
-{
-  "phpstan.rootDir": "packages/php",
-  "php-cs-fixer.config": ".php-cs-fixer.php;.php-cs-fixer.dist.php;.php_cs;.php_cs.dist;packages/php/.php-cs-fixer.php"
-}
