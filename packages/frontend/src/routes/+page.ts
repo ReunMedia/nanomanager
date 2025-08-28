@@ -7,7 +7,7 @@ export const load: PageLoad = async ({ fetch }) => {
     `${apiUrl}?` +
       new URLSearchParams({
         operation: "listFiles",
-      })
+      }),
   );
   const data = await response.json();
   return data;
