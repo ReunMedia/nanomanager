@@ -39,4 +39,20 @@ class Nanomanager
 
         return $files;
     }
+
+    public function run(bool $returnOutput = false): string
+    {
+        $output = "";
+        if ($returnOutput) {
+            ob_start();
+        }
+
+        echo "<h1>Hello World!</h1>";
+
+        if ($returnOutput) {
+            $output = ob_get_clean();
+        }
+
+        return (is_string($output)) ? $output : "";
+    }
 }

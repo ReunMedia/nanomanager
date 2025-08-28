@@ -38,7 +38,7 @@
     "scripts": {
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            ". vendor/reun/twig-utilities/bin/detect-vite-dev-server.sh && detect_vite localhost:5173 && php -S 0.0.0.0:8080 -t www"
+            "php -S 0.0.0.0:8080 -t tests/Integration"
         ],
         "lint": [
             "composer validate",
