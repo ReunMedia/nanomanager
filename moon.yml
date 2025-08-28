@@ -1,0 +1,12 @@
+workspace:
+  # Only inherit specific tasks for root project
+  inheritedTasks:
+    include:
+      - lintPkgJson
+      - lintComposerJson
+
+tasks:
+  lint:
+    deps:
+      - "lintPkgJson"
+      - "lintComposerJson"

@@ -1,4 +1,7 @@
 {
+  "name": "@reunmedia/nanomanager",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
     "lint": "moon run :lint"
   },

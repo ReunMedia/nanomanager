@@ -31,13 +31,6 @@ tasks:
       # Config and other files
       - "**/*.{md,mdx,yml,yaml,json,js,mjs,ts}"
 
-  lintPkgJson:
-    command: "npmPkgJsonLint ."
-    inputs:
-      - "**/package.json"
-      - "/package.json"
-      - "/.npmpackagejsonlintrc.json"
-
   lint:
     command:
       - "eslint"

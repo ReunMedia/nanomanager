@@ -1,0 +1,24 @@
+fileGroups:
+  phpSources:
+    - "./*.php"
+    - "src/**/*.php"
+    - "tests/**/*.php"
+
+tasks:
+  format:
+    command:
+      - "$workspaceRoot/vendor/bin/php-cs-fixer"
+      - "fix"
+      - "."
+    inputs:
+      - "@group(phpSources)"
+
+  lint:
+    command:
+      - "$workspaceRoot/vendor/bin/phpstan"
+    inputs:
+      - "@group(phpSources)"
+      - "phpstan.dist.neon" # Invalidate task cache on config change
+    deps:
+      - "lintComposerJson"
+      - "format"

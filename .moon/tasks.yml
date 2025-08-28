@@ -1,0 +1,16 @@
+tasks:
+  lintPkgJson:
+    command: "npmPkgJsonLint ."
+    inputs:
+      - "**/package.json"
+      - "/package.json"
+      - "/.npmpackagejsonlintrc.json"
+
+  lintComposerJson:
+    script: >
+      composer validate
+      && cd $workspaceRoot
+      && composer normalize $projectSource/composer.json
+    inputs:
+      - "composer.json"
+      - "composer.lock"

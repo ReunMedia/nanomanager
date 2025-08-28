@@ -1,5 +1,5 @@
 {
-  "name": "nanomanager",
+  "name": "@reunmedia/nanomanager",
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
@@ -10,7 +10,6 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "dev": "vite dev",
-    "lint": "moon run lint",
     "prepare": "svelte-kit sync || echo ''",
     "preview": "vite preview"
   },
