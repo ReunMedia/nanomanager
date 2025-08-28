@@ -1,0 +1,7 @@
+tasks:
+  build:
+    command:
+      - "echo"
+      - "TODO - Build PHP app"
+    deps:
+      - frontend:build

@@ -1,0 +1,13 @@
+fileGroups:
+  sources:
+    - "src/**/*"
+    - "tests/**/*"
+    - index.html
+    - svelte.config.js
+    - vite.config.ts
+
+tasks:
+  build:
+    script: "bun run build"
+    inputs:
+      - "@group(sources)"
