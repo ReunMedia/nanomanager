@@ -1,7 +1,8 @@
-import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig } from "vite";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
 import liveReload from "vite-plugin-live-reload";
 
+// https://vite.dev/config/
 export default defineConfig({
-  plugins: [sveltekit(), liveReload(["../php/src/**/*.php"])],
+  plugins: [svelte(), liveReload(["../php/src/**/*.php"])],
 });
