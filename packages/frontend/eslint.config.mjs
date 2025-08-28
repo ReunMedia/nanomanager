@@ -25,6 +25,9 @@ export default tseslint.config(
     files: ["**/*.svelte", "**/*.svelte.js"],
     languageOptions: {
       parserOptions: {
+        projectService: true,
+        extraFileExtensions: [".svelte"], // Add support for additional file extensions, such as .svelte
+        parser: tseslint.parser,
         svelteConfig,
       },
     },

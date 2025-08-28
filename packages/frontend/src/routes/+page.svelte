@@ -2,8 +2,6 @@
   import type { PageProps } from "./$types";
 
   let { data }: PageProps = $props();
-
-  console.log(data);
 </script>
 
 <div>
@@ -14,7 +12,7 @@
   </p>
 
   <ul>
-    {#each data.files as file}
+    {#each data.files as file (file)}
       <li>{file}</li>
     {/each}
   </ul>
