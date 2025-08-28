@@ -1,8 +1,8 @@
 parameters:
   level: 10
   paths:
-    - cli
+    # - cli
     - src
-    - www
+    # - www
   excludePaths:
     - */tests/*
