@@ -5,3 +5,6 @@ tasks:
       - "TODO - Build PHP app"
     deps:
       - frontend:build
+
+  trap:
+    command: composer trap

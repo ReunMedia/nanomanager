@@ -35,6 +35,10 @@
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "php -S 0.0.0.0:8080 -t tests/Integration"
+        ],
+        "trap": [
+            "Composer\\Config::disableProcessTimeout",
+            "vendor/bin/trap"
         ]
     }
 }
