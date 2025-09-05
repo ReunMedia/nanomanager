@@ -13,4 +13,10 @@ header('Access-Control-Allow-Origin: *');
 
 require __DIR__."/../../src/Nanomanager/Nanomanager.php";
 
-(new Nanomanager(__DIR__."/../fixtures/uploads"))->run();
+// Create test data directory
+$dir = __DIR__."/../_uploads";
+if (!is_dir($dir)) {
+    mkdir($dir);
+}
+
+(new Nanomanager($dir))->run();
