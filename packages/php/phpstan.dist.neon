@@ -7,8 +7,10 @@ parameters:
   excludePaths:
     - */tests/*
   typeAliases:
-    ListFilesOperationData: '''
+    operation_listFiles_result: '''
       array{
-        "files": string[]
+        "data": array{
+          "files": string[]
+        }
       }
     '''

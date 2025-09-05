@@ -26,9 +26,9 @@ class Nanomanager
     /**
      * Get a list of all filenames in managed directory.
      *
-     * @return string[]
+     * @return operation_listFiles_result
      */
-    public function listFiles(): array
+    public function operation_listFiles(): array
     {
         $files = [];
         while ($filename = readdir($this->handle)) {
@@ -41,7 +41,7 @@ class Nanomanager
             $files[] = $filename;
         }
 
-        return $files;
+        return ["data" => ["files" => $files]];
     }
 
     public function run(bool $returnOutput = false): string
@@ -77,14 +77,11 @@ class Nanomanager
         // All operation responses are returned as JSON
         header('Content-Type: application/json; charset=utf-8');
 
-        $resultData = [];
+        $operationResult = [];
 
         switch ($operationType) {
             case 'listFiles':
-                /**
-                 * @var ListFilesOperationData
-                 */
-                $resultData = ["files" => $this->listFiles()];
+                $operationResult = $this->operation_listFiles();
 
                 break;
 
@@ -98,8 +95,6 @@ class Nanomanager
                 break;
         }
 
-        echo json_encode([
-            "data" => $resultData,
-        ]);
+        echo json_encode($operationResult);
     }
 }
