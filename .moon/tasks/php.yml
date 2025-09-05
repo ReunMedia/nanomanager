@@ -24,5 +24,7 @@ tasks:
       - "format"
 
   test:
-    command:
-      - "vendor/bin/pest"
+    command: "vendor/bin/pest"
+
+  dev:
+    command: "composer dev"

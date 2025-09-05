@@ -46,3 +46,6 @@ tasks:
     script: "bun test"
     inputs:
       - "@group(sources)"
+
+  dev:
+    command: "bun dev"
