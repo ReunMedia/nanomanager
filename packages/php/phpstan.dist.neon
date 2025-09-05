@@ -14,3 +14,16 @@ parameters:
         }
       }
     '''
+    operation_renameFile_parameters: '''
+      array{
+        "oldName": string,
+        "newName": string,
+      }
+    '''
+    operation_renameFile_result: '''
+      array{
+        "data": array{
+          "newName": string,
+        }
+      }
+    '''
