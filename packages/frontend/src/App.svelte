@@ -1,5 +1,5 @@
 <script lang="ts">
-  import FileList from "./lib/FileList.svelte";
+  import FileList from "./lib/components/FileList.svelte";
 </script>
 
 <main class="container">
