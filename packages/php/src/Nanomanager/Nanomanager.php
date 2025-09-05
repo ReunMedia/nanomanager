@@ -51,12 +51,9 @@ class Nanomanager
             ob_start();
         }
 
-        $operation = $_GET["operation"];
-
-        \trap($operation);
-
-        if (is_string($operation)) {
-            $this->runOperation($operation);
+        if ("POST" === $_SERVER["REQUEST_METHOD"]) {
+            $body = file_get_contents('php://input');
+            $this->runOperation(is_string($body) ? $body : "{}");
         }
 
         if ($returnOutput) {
@@ -66,25 +63,43 @@ class Nanomanager
         return (is_string($output)) ? $output : "";
     }
 
-    private function runOperation(string $operation): void
+    private function runOperation(string $operationJSON): void
     {
+        $operation = json_decode($operationJSON, true);
+        if (!is_array($operation)) {
+            // TODO - Better error handling
+            throw new \Exception("Invalid operation");
+        }
+
+        $operationType = is_string($operation["operationType"] ?? false) ? $operation["operationType"] : "";
+        $parameters = $operation["parameters"] ?? [];
+
         // All operation responses are returned as JSON
         header('Content-Type: application/json; charset=utf-8');
 
-        switch ($operation) {
+        $resultData = [];
+
+        switch ($operationType) {
             case 'listFiles':
-                echo json_encode(["files" => $this->listFiles()]);
+                /**
+                 * @var ListFilesOperationData
+                 */
+                $resultData = ["files" => $this->listFiles()];
 
                 break;
 
             default:
                 http_response_code(400);
 
-                echo json_encode([
-                    "error" => "Unsupported operation '{$operation}'",
-                ]);
+                $resultData = [
+                    "error" => "Unsupported operation '{$operationType}'",
+                ];
 
                 break;
         }
+
+        echo json_encode([
+            "data" => $resultData,
+        ]);
     }
 }

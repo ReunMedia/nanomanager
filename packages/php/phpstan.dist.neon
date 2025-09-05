@@ -6,3 +6,9 @@ parameters:
     # - www
   excludePaths:
     - */tests/*
+  typeAliases:
+    ListFilesOperationData: '''
+      array{
+        "files": string[]
+      }
+    '''
