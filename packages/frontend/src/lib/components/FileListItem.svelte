@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { showToast } from "../utils/showToast";
+
   interface Props {
     filename: string;
   }
@@ -12,13 +14,27 @@
   let currentName = $state(filename);
   let renamingActive = $derived(previousName !== "");
 
+  /**
+   * Input element
+   */
+  let inputEl: HTMLInputElement | undefined;
+
   function onClickRename() {
     previousName = currentName;
+
+    // Focus filename input and select text before file extension
+    const caretPosition = currentName.lastIndexOf(".");
+    inputEl?.focus();
+    inputEl?.setSelectionRange(0, caretPosition);
   }
 
   function onClickRenameCancel() {
     currentName = previousName;
     previousName = "";
+
+    // Deselect input
+    inputEl?.blur();
+    document.getSelection()?.empty();
   }
 
   function onClickRenameConfirm() {
@@ -33,6 +49,7 @@
     <input
       readonly={renamingActive.valueOf() === false}
       bind:value={currentName}
+      bind:this={inputEl}
     />
   </td>
   <td>
