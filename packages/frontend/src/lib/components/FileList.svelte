@@ -1,15 +1,16 @@
 <script lang="ts">
   import { apiRequest } from "../utils/apiRequest";
+  import FileListItem from "./FileListItem.svelte";
 
   export const getFiles = async () => {
     return (await apiRequest("listFiles", {})).data;
   };
 </script>
 
-<ul>
+<table>
   {#await getFiles() then data}
     {#each data.files as file (file)}
-      <li>{file}</li>
+      <FileListItem filename={file} />
     {/each}
   {/await}
-</ul>
+</table>
