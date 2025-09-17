@@ -29,6 +29,21 @@ interface Operations {
       };
     };
   };
+  renameFile: {
+    parameters: {
+      oldName: string;
+      newName: string;
+    };
+    result: {
+      data: {
+        /**
+         * New name of the file. If the renaming failed, the original file name
+         * is returned.
+         */
+        newName: string;
+      };
+    };
+  };
 }
 
 const apiUrl = "http://localhost:8080";

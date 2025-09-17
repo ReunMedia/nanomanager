@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { showToast } from "../utils/showToast";
+  import { apiRequest } from "../utils/apiRequest";
 
   interface Props {
     filename: string;
@@ -37,9 +37,29 @@
     document.getSelection()?.empty();
   }
 
-  function onClickRenameConfirm() {
-    console.log("TODO - Send rename API operation and wait for response");
-    console.log("TODO - Show toast on rename success / failure");
+  async function onClickRenameConfirm() {
+    // Don't run API call if name didn't change or we're not editing a name
+    if (previousName === "" || previousName === currentName) {
+      onClickRenameCancel();
+      return;
+    }
+
+    const response = await apiRequest("renameFile", {
+      oldName: previousName,
+      newName: currentName,
+    });
+
+    const { newName } = response.data;
+
+    if (newName === currentName) {
+      console.log("Rename successful");
+      console.log("TODO - Show toast on successful rename");
+    } else {
+      console.log("Rename failed");
+      console.log("TODO - Show toast on rename failure");
+      currentName = previousName;
+    }
+
     previousName = "";
   }
 </script>
