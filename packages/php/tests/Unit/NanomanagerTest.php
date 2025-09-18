@@ -6,15 +6,18 @@ use Nanomanager\Nanomanager;
 use Tests\TestCase;
 
 describe(Nanomanager::class, function () {
-    it("should display a list of files in the selected folder", function () {
+    it("should allow uploading files", function () {})->todo();
+    it("should allow deleting files", function () {})->todo();
+});
+
+describe("'listFiles' operation", function () {
+    it("should return files in naturally sorted case-insensitive order", function () {
         $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
         $result = $nanomanager->operation_listFiles();
         $files = $result["data"]["files"];
-        expect($files)->toHaveCount(2);
-        expect($files)->toContain("hello.txt", "second-file.txt");
+        expect($files)->toHaveCount(5);
+        expect($files)->toBe(["1a.txt", "2b.txt", "11c.txt", "hello.txt", "Second-file.txt"]);
     });
-    it("should allow uploading files", function () {})->todo();
-    it("should allow deleting files", function () {})->todo();
 });
 
 describe("'renameFile' operation", function () {
@@ -91,13 +94,13 @@ describe("'renameFile' operation", function () {
     });
     it("should not allow renaming to a name that already exists", function () {
         $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
-        $result = $nanomanager->operation_renameFile(["oldName" => "hello.txt", "newName" => "second-file.txt"]);
+        $result = $nanomanager->operation_renameFile(["oldName" => "hello.txt", "newName" => "Second-file.txt"]);
         expect($result["data"]["newName"])->toBe("hello.txt");
     });
     it("should output client-side handleable errors when an operation fails", function () {})->todo();
     beforeEach(function () {
         // Make sure the text fixtures exist before running each test
         expect(file_exists(TestCase::$uploadsDirectory."/hello.txt"))->toBeTrue();
-        expect(file_exists(TestCase::$uploadsDirectory."/second-file.txt"))->toBeTrue();
+        expect(file_exists(TestCase::$uploadsDirectory."/Second-file.txt"))->toBeTrue();
     });
 });

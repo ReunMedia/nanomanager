@@ -33,6 +33,8 @@ class Nanomanager
     /**
      * Get a list of all filenames in managed directory.
      *
+     * Files are returned in naturally sorted case-insensitive order
+     *
      * @return operation_listFiles_result
      */
     public function operation_listFiles(): array
@@ -47,6 +49,9 @@ class Nanomanager
             }
             $files[] = $filename;
         }
+
+        // Sort files in natural case-insensitive order
+        sort($files, SORT_NATURAL | SORT_FLAG_CASE);
 
         return ["data" => ["files" => $files]];
     }
