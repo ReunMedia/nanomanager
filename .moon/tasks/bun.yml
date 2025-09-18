@@ -2,6 +2,7 @@ fileGroups:
   sources:
     - "public/**/*.js"
     - "src/**/*"
+  tests:
     - "tests/**/*"
 
 tasks:
@@ -28,6 +29,7 @@ tasks:
       - "/.prettierignore"
       - "/.gitignore"
       - "@group(sources)"
+      - "@group(tests)"
       # Config and other files
       - "**/*.{md,mdx,yml,yaml,json,js,mjs,ts}"
 
@@ -36,6 +38,7 @@ tasks:
       - "eslint"
     inputs:
       - "@group(sources)"
+      - "@group(tests)"
       - "**/eslint.config.mjs"
       - "/eslint.config.mjs"
     deps:
@@ -46,6 +49,7 @@ tasks:
     script: "bun test"
     inputs:
       - "@group(sources)"
+      - "@group(tests)"
 
   dev:
     command: "bun dev"

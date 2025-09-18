@@ -2,6 +2,7 @@ fileGroups:
   phpSources:
     - "./*.php"
     - "src/**/*.php"
+  phpTests:
     - "tests/**/*.php"
 
 tasks:
@@ -12,12 +13,14 @@ tasks:
       - "."
     inputs:
       - "@group(phpSources)"
+      - "@group(phpTests)"
 
   lint:
     command:
       - "$workspaceRoot/vendor/bin/phpstan"
     inputs:
       - "@group(phpSources)"
+      - "@group(phpTests)"
       - "phpstan.dist.neon" # Invalidate task cache on config change
     deps:
       - "lintComposerJson"
@@ -25,6 +28,9 @@ tasks:
 
   test:
     command: "vendor/bin/pest"
+    inputs:
+      - "@group(phpSources)"
+      - "@group(phpTests)"
 
   dev:
     command: "composer dev"

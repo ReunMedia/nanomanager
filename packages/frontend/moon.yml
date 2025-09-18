@@ -1,10 +1,11 @@
 fileGroups:
   sources:
     - "src/**/*"
-    - "tests/**/*"
     - index.html
     - svelte.config.js
     - vite.config.ts
+  tests:
+    - "tests/**/*"
 
 tasks:
   build:
