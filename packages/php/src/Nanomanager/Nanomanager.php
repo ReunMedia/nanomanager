@@ -41,8 +41,8 @@ class Nanomanager
     {
         $files = [];
         while ($filename = readdir($this->handle)) {
-            if ("." === $filename
-                || ".." === $filename
+            if ('.' === $filename
+                || '..' === $filename
                 || is_dir("{$this->directory}/{$filename}")
             ) {
                 continue;
@@ -53,7 +53,7 @@ class Nanomanager
         // Sort files in natural case-insensitive order
         sort($files, SORT_NATURAL | SORT_FLAG_CASE);
 
-        return ["data" => ["files" => $files]];
+        return ['data' => ['files' => $files]];
     }
 
     /**
@@ -69,8 +69,8 @@ class Nanomanager
         $newName = "{$this->directory}/{$parameters['newName']}";
 
         $result = [
-            "data" => [
-                "newName" => $parameters["oldName"],
+            'data' => [
+                'newName' => $parameters['oldName'],
             ],
         ];
 
@@ -85,7 +85,7 @@ class Nanomanager
         }
 
         // Prevent invalid characters
-        if (false === $this->is_valid_filename($parameters["newName"])) {
+        if (false === $this->is_valid_filename($parameters['newName'])) {
             return $result;
         }
 
@@ -95,7 +95,7 @@ class Nanomanager
         }
 
         if (rename($oldName, $newName)) {
-            $result["data"]["newName"] = $parameters["newName"];
+            $result['data']['newName'] = $parameters['newName'];
         }
 
         return $result;
@@ -103,37 +103,37 @@ class Nanomanager
 
     public function run(bool $returnOutput = false): string
     {
-        $output = "";
+        $output = '';
         if ($returnOutput) {
             ob_start();
         }
 
-        if ("POST" === $_SERVER["REQUEST_METHOD"]) {
+        if ('POST' === $_SERVER['REQUEST_METHOD']) {
             $body = file_get_contents('php://input');
-            $this->runOperation(is_string($body) ? $body : "{}");
+            $this->runOperation(is_string($body) ? $body : '{}');
         }
 
         if ($returnOutput) {
             $output = ob_get_clean();
         }
 
-        return (is_string($output)) ? $output : "";
+        return (is_string($output)) ? $output : '';
     }
 
     private function is_valid_filename(string $filename): bool
     {
         // Prevent empty filename
-        if ("" === $filename) {
+        if ('' === $filename) {
             return false;
         }
 
         // Prevent dotfiles
-        if (str_starts_with($filename, ".")) {
+        if (str_starts_with($filename, '.')) {
             return false;
         }
 
         // Prevent leading / trailing space
-        if (str_starts_with($filename, " ") || str_ends_with($filename, " ")) {
+        if (str_starts_with($filename, ' ') || str_ends_with($filename, ' ')) {
             return false;
         }
 
@@ -151,11 +151,11 @@ class Nanomanager
         $operation = json_decode($operationJSON, true);
         if (!is_array($operation)) {
             // TODO - Better error handling
-            throw new \Exception("Invalid operation");
+            throw new \Exception('Invalid operation');
         }
 
-        $operationType = is_string($operation["operationType"] ?? false) ? $operation["operationType"] : "";
-        $parameters = $operation["parameters"];
+        $operationType = is_string($operation['operationType'] ?? false) ? $operation['operationType'] : '';
+        $parameters = $operation['parameters'];
         if (!is_array($parameters)) {
             $parameters = [];
         }
@@ -171,11 +171,11 @@ class Nanomanager
 
                 break;
 
-            case "renameFile":
+            case 'renameFile':
                 $operationResult = $this->operation_renameFile([
                     // TODO - Better DRY parameter validation
-                    "oldName" => is_string($parameters["oldName"]) ? $parameters["oldName"] : "",
-                    "newName" => is_string($parameters["newName"]) ? $parameters["newName"] : "",
+                    'oldName' => is_string($parameters['oldName']) ? $parameters['oldName'] : '',
+                    'newName' => is_string($parameters['newName']) ? $parameters['newName'] : '',
                 ]);
 
                 break;
@@ -184,7 +184,7 @@ class Nanomanager
                 http_response_code(400);
 
                 $resultData = [
-                    "error" => "Unsupported operation '{$operationType}'",
+                    'error' => "Unsupported operation '{$operationType}'",
                 ];
 
                 break;
