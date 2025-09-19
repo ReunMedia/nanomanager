@@ -11,9 +11,11 @@ tasks:
       - "$workspaceRoot/vendor/bin/php-cs-fixer"
       - "fix"
       - "."
+      - "--config=$workspaceRoot/.php-cs-fixer.php"
     inputs:
       - "@group(phpSources)"
       - "@group(phpTests)"
+      - ".php-cs-fixer.php" # Invalidate task cache on config change
 
   lint:
     command:
