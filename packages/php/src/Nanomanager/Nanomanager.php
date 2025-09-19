@@ -90,7 +90,9 @@ class Nanomanager
         }
 
         // Make sure the new file doesn't exist
-        if (is_file($newName)) {
+        // We're using `file_exists` instead of `is_file` to also consider
+        // directories
+        if (file_exists($newName)) {
             return $result;
         }
 
