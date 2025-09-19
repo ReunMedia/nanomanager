@@ -96,6 +96,10 @@ describe("'renameFile' operation", function () {
         $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
         $result = $nanomanager->operation_renameFile(['oldName' => 'hello.txt', 'newName' => 'Second-file.txt']);
         expect($result['data']['newName'])->toBe('hello.txt');
+
+        // Prevent renaming to directory
+        $result = $nanomanager->operation_renameFile(['oldName' => 'hello.txt', 'newName' => 'subdir']);
+        expect($result['data']['newName'])->toBe('hello.txt');
     });
     it('should output client-side handleable errors when an operation fails', function () {})->todo();
     beforeEach(function () {
