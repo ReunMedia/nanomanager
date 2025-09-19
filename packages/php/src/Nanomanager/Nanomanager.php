@@ -65,39 +65,37 @@ class Nanomanager
      */
     public function operation_renameFile($parameters): array
     {
-        $oldName = realpath("{$this->directory}/{$parameters['oldName']}");
-        $newName = "{$this->directory}/{$parameters['newName']}";
+        $oldName = $parameters['oldName'];
+        $newName = $parameters['newName'];
+
+        $oldNameFull = realpath("{$this->directory}/{$oldName}");
+        $newNameFull = "{$this->directory}/{$newName}";
 
         $result = [
             'data' => [
-                'newName' => $parameters['oldName'],
+                'newName' => $oldName,
             ],
         ];
 
         // Make sure the old file exists
-        if (false === $oldName) {
+        if (false === $oldNameFull) {
             return $result;
         }
 
-        // Prevent path traversal
-        if (dirname($oldName) !== dirname($newName) && dirname($newName) !== dirname($this->directory)) {
-            return $result;
-        }
-
-        // Prevent invalid characters
-        if (false === $this->is_valid_filename($parameters['newName'])) {
+        // Validate old and new filenames
+        if (!$this->is_valid_filename($oldName) || !$this->is_valid_filename($newName)) {
             return $result;
         }
 
         // Make sure the new file doesn't exist
         // We're using `file_exists` instead of `is_file` to also consider
         // directories
-        if (file_exists($newName)) {
+        if (file_exists($newNameFull)) {
             return $result;
         }
 
-        if (rename($oldName, $newName)) {
-            $result['data']['newName'] = $parameters['newName'];
+        if (rename($oldNameFull, $newNameFull)) {
+            $result['data']['newName'] = $newName;
         }
 
         return $result;
@@ -112,7 +110,7 @@ class Nanomanager
      */
     public function operation_deleteFile($parameters): array
     {
-        return ['data' => []];
+        return ['data' => ['success' => false]];
     }
 
     public function run(bool $returnOutput = false): string
@@ -134,7 +132,14 @@ class Nanomanager
         return (is_string($output)) ? $output : '';
     }
 
-    private function is_valid_filename(string $filename): bool
+    /**
+     * Validates a filename as a valid file managed by Nanomanager.
+     *
+     * @param string $filename Filename without path
+     *
+     * @return bool true if filename is valid
+     */
+    public function is_valid_filename(string $filename): bool
     {
         // Prevent empty filename
         if ('' === $filename) {
@@ -151,13 +156,20 @@ class Nanomanager
             return false;
         }
 
-        $asdf = preg_match(
+        // Prevent invalid characters
+        if (0 !== preg_match(
             '@[~<>:"/\|?*\x00-\x1F]@x',
             $filename
-        );
+        )) {
+            return false;
+        }
 
-        // Prevent invalid characters
-        return 0 === $asdf;
+        // Prevent directory traversal outside managed directory
+        if (dirname($this->directory.'/'.$filename) !== dirname($this->directory.'/.')) {
+            return false;
+        }
+
+        return true;
     }
 
     private function runOperation(string $operationJSON): void

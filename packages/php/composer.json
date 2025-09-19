@@ -15,6 +15,7 @@
     },
     "require-dev": {
         "buggregator/trap": "^1.13",
+        "mockery/mockery": "^1.6",
         "pestphp/pest": "^4.0"
     },
     "autoload": {
