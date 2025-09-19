@@ -41,8 +41,8 @@ class Nanomanager
     {
         $files = [];
         while ($filename = readdir($this->handle)) {
-            if ('.' === $filename
-                || '..' === $filename
+            // Don't return `.`, `..`, dotfiles or directories
+            if (str_starts_with($filename, '.')
                 || is_dir("{$this->directory}/{$filename}")
             ) {
                 continue;

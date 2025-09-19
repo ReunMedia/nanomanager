@@ -18,6 +18,13 @@ describe("'listFiles' operation", function () {
         expect($files)->toHaveCount(5);
         expect($files)->toBe(['1a.txt', '2b.txt', '11c.txt', 'hello.txt', 'Second-file.txt']);
     });
+
+    it('should not return dotfiles', function () {
+        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+        $result = $nanomanager->operation_listFiles();
+        $files = $result['data']['files'];
+        expect($files)->not()->toContain('.htaccess');
+    });
 });
 
 describe("'renameFile' operation", function () {
