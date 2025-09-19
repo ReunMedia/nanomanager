@@ -27,3 +27,15 @@ parameters:
         }
       }
     '''
+    operation_deleteFile_parameters: '''
+      array{
+        "filename": string,
+      }
+    '''
+    operation_deleteFile_result: '''
+      array{
+        "data": array{
+          "success": boolean,
+        }
+      }
+    '''

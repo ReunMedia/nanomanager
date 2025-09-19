@@ -103,6 +103,18 @@ class Nanomanager
         return $result;
     }
 
+    /**
+     * Delete a file.
+     *
+     * @param operation_deleteFile_parameters $parameters
+     *
+     * @return operation_deleteFile_result
+     */
+    public function operation_deleteFile($parameters): array
+    {
+        return ['data' => []];
+    }
+
     public function run(bool $returnOutput = false): string
     {
         $output = '';

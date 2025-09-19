@@ -115,3 +115,59 @@ describe("'renameFile' operation", function () {
         expect(file_exists(TestCase::$uploadsDirectory.'/Second-file.txt'))->toBeTrue();
     });
 });
+
+describe("'deleteFile' operation", function () {
+    it('should delete a file', function () {
+        // Create test file to be deleted
+        $fileToDelete = TestCase::$uploadsDirectory.'/delete-me.txt';
+        touch($fileToDelete);
+
+        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+
+        expect(file_exists($fileToDelete))->toBeTrue();
+        $result = $nanomanager->operation_deleteFile(['filename' => 'delete-me.txt']);
+        expect($result['data']['success'])->toBeTrue();
+        expect(file_exists($fileToDelete))->toBeFalse();
+    })->after(function () {
+        // Clean up test file in case the test fails
+        $fileToDelete = TestCase::$uploadsDirectory.'/delete-me.txt';
+
+        if (file_exists($fileToDelete)) {
+            unlink($fileToDelete);
+        }
+    });
+
+    it('should make sure only existing valid files in uploads directory are deleted', function () {
+        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+
+        // Empty file
+        $result = $nanomanager->operation_deleteFile(['filename' => '']);
+        expect($result['data']['success'])->toBeFalse();
+
+        // Non-existing file
+        $result = $nanomanager->operation_deleteFile(['filename' => 'not-found.txt']);
+        expect($result['data']['success'])->toBeFalse();
+
+        // Directory traversal
+        // Down
+        $result = $nanomanager->operation_deleteFile(['filename' => 'subdir/subdir-file.txt']);
+        expect($result['data']['success'])->toBeFalse();
+        expect(file_exists(TestCase::$uploadsDirectory.'/subdir/subdir-file.txt'))->toBeTrue();
+
+        // Up
+        $result = $nanomanager->operation_deleteFile(['filename' => '../TestCase.php']);
+        expect($result['data']['success'])->toBeFalse();
+        expect(file_exists(TestCase::$uploadsDirectory.'/../TestCase.php'))->toBeTrue();
+
+        // Directories shouldn't be deleted
+        $result = $nanomanager->operation_deleteFile(['filename' => 'subdir']);
+        expect($result['data']['success'])->toBeFalse();
+        expect(file_exists(TestCase::$uploadsDirectory.'/subdir'))->toBeTrue();
+
+        // Dotfiles (e.g. `.htaccess`) shouldn't be deleted as they cannot be
+        // managed (listed, uploaded, renamed)
+        $result = $nanomanager->operation_deleteFile(['filename' => '.htaccess']);
+        expect($result['data']['success'])->toBeFalse();
+        expect(file_exists(TestCase::$uploadsDirectory.'/.htaccess'))->toBeTrue();
+    });
+});
