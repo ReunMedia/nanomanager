@@ -114,7 +114,7 @@ class Nanomanager
         $filename = $parameters['filename'];
         $fullName = realpath("{$this->directory}/{$filename}");
 
-        if ($this->isValidFilename($filename) && $fullName && !is_dir($fullName)) {
+        if ($this->isValidFilename($filename) && is_string($fullName) && !is_dir($fullName)) {
             $success = unlink($fullName);
         }
 
