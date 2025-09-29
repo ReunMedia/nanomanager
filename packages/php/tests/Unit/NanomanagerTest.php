@@ -7,7 +7,6 @@ use Tests\TestCase;
 
 describe(Nanomanager::class, function () {
     it('should allow uploading files', function () {})->todo();
-    it('should allow deleting files', function () {})->todo();
 });
 
 describe(Nanomanager::class.'::is_valid_filename()', function () {
@@ -157,7 +156,7 @@ describe("'deleteFile' operation", function () {
         $nanomanagerSpy = Mockery::spy(Nanomanager::class, [TestCase::$uploadsDirectory])->makePartial();
 
         /** @disregard P1013 */
-        $nanomanagerSpy->operation_renameFile(['filename' => 'delete-me.txt']);
+        $nanomanagerSpy->operation_deleteFile(['filename' => 'delete-me.txt']);
 
         /** @disregard P1013 */
         $nanomanagerSpy->shouldHaveReceived('is_valid_filename')
@@ -183,4 +182,4 @@ describe("'deleteFile' operation", function () {
         expect($result['data']['success'])->toBeFalse();
         expect(file_exists(TestCase::$uploadsDirectory.'/.htaccess'))->toBeTrue();
     });
-})->todo();
+});

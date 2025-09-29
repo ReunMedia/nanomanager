@@ -110,7 +110,15 @@ class Nanomanager
      */
     public function operation_deleteFile($parameters): array
     {
-        return ['data' => ['success' => false]];
+        $success = false;
+        $filename = $parameters['filename'];
+        $fullName = realpath("{$this->directory}/{$filename}");
+
+        if ($this->is_valid_filename($filename) && $fullName && !is_dir($fullName)) {
+            $success = unlink($fullName);
+        }
+
+        return ['data' => ['success' => $success]];
     }
 
     public function run(bool $returnOutput = false): string
