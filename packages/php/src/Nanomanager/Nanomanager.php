@@ -180,7 +180,7 @@ class Nanomanager
         return true;
     }
 
-    private function runOperation(string $operationJSON): void
+    public function runOperation(string $operationJSON): void
     {
         $operation = json_decode($operationJSON, true);
         if (!is_array($operation)) {

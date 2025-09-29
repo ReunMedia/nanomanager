@@ -9,6 +9,55 @@ describe(Nanomanager::class, function () {
     it('should allow uploading files', function () {})->todo();
 });
 
+test(Nanomanager::class.'::runOperation()', function () {
+    $nanomanagerSpy = Mockery::mock(Nanomanager::class, [TestCase::$uploadsDirectory])->makePartial();
+
+    $operations = [];
+
+    $operations[] = [
+        'expects' => 'operation_listFiles',
+        'json' => <<<'JSON'
+                {
+                    "operationType": "listFiles",
+                    "parameters": {}
+                }
+            JSON,
+    ];
+
+    $operations[] = [
+        'expects' => 'operation_renameFile',
+        'json' => <<<'JSON'
+                {
+                    "operationType": "renameFile",
+                    "parameters": {
+                        "oldName": "old.txt",
+                        "newName": "new.txt"
+                    }
+                }
+            JSON,
+    ];
+
+    $operations[] = [
+        'expects' => 'operation_deleteFile',
+        'json' => <<<'JSON'
+                {
+                    "operationType": "deleteFile",
+                    "parameters": {
+                        "filename": "delete.txt"
+                    }
+                }
+            JSON,
+    ];
+
+    foreach ($operations as $operation) {
+        /** @disregard P1013 */
+        $nanomanagerSpy->expects($operation['expects']);
+
+        /** @disregard P1013 */
+        $nanomanagerSpy->runOperation($operation['json']);
+    }
+})->only();
+
 describe(Nanomanager::class.'::is_valid_filename()', function () {
     it('should not allow directory traversal', function () {
         $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
