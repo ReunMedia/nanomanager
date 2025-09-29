@@ -83,7 +83,7 @@ class Nanomanager
         }
 
         // Validate old and new filenames
-        if (!$this->is_valid_filename($oldName) || !$this->is_valid_filename($newName)) {
+        if (!$this->isValidFilename($oldName) || !$this->isValidFilename($newName)) {
             return $result;
         }
 
@@ -114,7 +114,7 @@ class Nanomanager
         $filename = $parameters['filename'];
         $fullName = realpath("{$this->directory}/{$filename}");
 
-        if ($this->is_valid_filename($filename) && $fullName && !is_dir($fullName)) {
+        if ($this->isValidFilename($filename) && $fullName && !is_dir($fullName)) {
             $success = unlink($fullName);
         }
 
@@ -147,7 +147,7 @@ class Nanomanager
      *
      * @return bool true if filename is valid
      */
-    public function is_valid_filename(string $filename): bool
+    public function isValidFilename(string $filename): bool
     {
         // Prevent empty filename
         if ('' === $filename) {

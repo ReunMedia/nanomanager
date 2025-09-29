@@ -58,49 +58,49 @@ test(Nanomanager::class.'::runOperation()', function () {
     }
 })->only();
 
-describe(Nanomanager::class.'::is_valid_filename()', function () {
+describe(Nanomanager::class.'::isValidFilename()', function () {
     it('should not allow directory traversal', function () {
         $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
 
         // Down
-        expect($nanomanager->is_valid_filename('subdir/renamed.txt'))->toBeFalse();
+        expect($nanomanager->isValidFilename('subdir/renamed.txt'))->toBeFalse();
 
         // Up
-        expect($nanomanager->is_valid_filename('../renamed.txt'))->toBeFalse();
+        expect($nanomanager->isValidFilename('../renamed.txt'))->toBeFalse();
 
         // Home
-        expect($nanomanager->is_valid_filename('~/renamed.txt'))->toBeFalse();
+        expect($nanomanager->isValidFilename('~/renamed.txt'))->toBeFalse();
     });
 
     it('should not allow empty filename', function () {
         $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
 
-        expect($nanomanager->is_valid_filename(''))->toBeFalse();
+        expect($nanomanager->isValidFilename(''))->toBeFalse();
     });
 
     it('should not allow filename to begin or end with a space', function () {
         $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
 
-        expect($nanomanager->is_valid_filename(' hello.txt'))->toBeFalse();
-        expect($nanomanager->is_valid_filename('hello.txt '))->toBeFalse();
+        expect($nanomanager->isValidFilename(' hello.txt'))->toBeFalse();
+        expect($nanomanager->isValidFilename('hello.txt '))->toBeFalse();
     });
 
     it('should not allow dotfiles', function () {
         $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
 
-        expect($nanomanager->is_valid_filename('.htaccess'))->toBeFalse();
+        expect($nanomanager->isValidFilename('.htaccess'))->toBeFalse();
     });
 
     it('should not allow invalid characters', function () {
         $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
 
-        expect($nanomanager->is_valid_filename('.htaccess'))->toBeFalse();
+        expect($nanomanager->isValidFilename('.htaccess'))->toBeFalse();
 
         // Renaming file to `~`
-        expect($nanomanager->is_valid_filename('~'))->toBeFalse;
+        expect($nanomanager->isValidFilename('~'))->toBeFalse;
 
         // Renaming file to `<hello.txt`
-        expect($nanomanager->is_valid_filename('<hello.txt'))->toBeFalse;
+        expect($nanomanager->isValidFilename('<hello.txt'))->toBeFalse;
     });
 });
 
@@ -149,12 +149,12 @@ describe("'renameFile' operation", function () {
         $nanomanagerSpy->operation_renameFile(['oldName' => 'hello.txt', 'newName' => 'Second-file.txt']);
 
         /** @disregard P1013 */
-        $nanomanagerSpy->shouldHaveReceived('is_valid_filename')
+        $nanomanagerSpy->shouldHaveReceived('isValidFilename')
             ->with('hello.txt')
         ;
 
         /** @disregard P1013 */
-        $nanomanagerSpy->shouldHaveReceived('is_valid_filename')
+        $nanomanagerSpy->shouldHaveReceived('isValidFilename')
             ->with('Second-file.txt')
         ;
     });
@@ -208,7 +208,7 @@ describe("'deleteFile' operation", function () {
         $nanomanagerSpy->operation_deleteFile(['filename' => 'delete-me.txt']);
 
         /** @disregard P1013 */
-        $nanomanagerSpy->shouldHaveReceived('is_valid_filename')
+        $nanomanagerSpy->shouldHaveReceived('isValidFilename')
             ->with('delete-me.txt')
         ;
     });
