@@ -214,10 +214,17 @@ class Nanomanager
 
                 break;
 
+            case 'deleteFile':
+                $operationResult = $this->operation_deleteFile([
+                    'filename' => is_string($parameters['filename']) ? $parameters['filename'] : '',
+                ]);
+
+                break;
+
             default:
                 http_response_code(400);
 
-                $resultData = [
+                $operationResult = [
                     'error' => "Unsupported operation '{$operationType}'",
                 ];
 
