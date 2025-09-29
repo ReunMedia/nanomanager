@@ -3,9 +3,17 @@
 
   interface Props {
     filename: string;
+    /**
+     * Called after file is renamed.
+     */
+    onRenamed: (oldName: string, newName: string) => void;
+    /**
+     * Called after file is deleted.
+     */
+    onDeleted: (filename: string) => void;
   }
 
-  let { filename }: Props = $props();
+  let { filename, onDeleted, onRenamed }: Props = $props();
 
   /**
    * Keeps track of previous filename during renaming.
@@ -37,6 +45,16 @@
     document.getSelection()?.empty();
   }
 
+  async function onClickDelete() {
+    const response = await apiRequest("deleteFile", {
+      filename: currentName,
+    });
+
+    if (response.data.success === true) {
+      onDeleted(currentName);
+    }
+  }
+
   async function onClickRenameConfirm() {
     // Don't run API call if name didn't change or we're not editing a name
     if (previousName === "" || previousName === currentName) {
@@ -54,6 +72,7 @@
     if (newName === currentName) {
       console.log("Rename successful");
       console.log("TODO - Show toast on successful rename");
+      onRenamed(previousName, currentName);
     } else {
       console.log("Rename failed");
       console.log("TODO - Show toast on rename failure");
@@ -79,7 +98,7 @@
         <button onclick={onClickRenameConfirm}>✅</button>
       {:else}
         <button onclick={onClickRename}>✏️</button>
-        <button>🗑️</button>
+        <button onclick={onClickDelete}>🗑️</button>
       {/if}
     </div>
   </td>

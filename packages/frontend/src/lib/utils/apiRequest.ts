@@ -44,6 +44,16 @@ interface Operations {
       };
     };
   };
+  deleteFile: {
+    parameters: {
+      filename: string;
+    };
+    result: {
+      data: {
+        success: boolean;
+      };
+    };
+  };
 }
 
 const apiUrl = "http://localhost:8080";
