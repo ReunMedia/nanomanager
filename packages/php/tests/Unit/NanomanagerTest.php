@@ -16,37 +16,31 @@ test(Nanomanager::class.'::runOperation()', function () {
 
     $operations[] = [
         'expects' => 'operation_listFiles',
-        'json' => <<<'JSON'
-                {
-                    "operationType": "listFiles",
-                    "parameters": {}
-                }
-            JSON,
+        'operationType' => 'listFiles',
+        'parameters' => [],
     ];
 
     $operations[] = [
         'expects' => 'operation_renameFile',
-        'json' => <<<'JSON'
-                {
-                    "operationType": "renameFile",
-                    "parameters": {
-                        "oldName": "old.txt",
-                        "newName": "new.txt"
-                    }
-                }
-            JSON,
+        'operationType' => 'renameFile',
+        'parameters' => [
+            'oldName' => 'old.txt',
+            'newName' => 'new.txt',
+        ],
     ];
 
     $operations[] = [
         'expects' => 'operation_deleteFile',
-        'json' => <<<'JSON'
-                {
-                    "operationType": "deleteFile",
-                    "parameters": {
-                        "filename": "delete.txt"
-                    }
-                }
-            JSON,
+        'operationType' => 'deleteFile',
+        'parameters' => [
+            'filename' => 'delete.txt',
+        ],
+    ];
+
+    $operations[] = [
+        'expects' => 'operation_uploadFile',
+        'operationType' => 'uploadFile',
+        'parameters' => [],
     ];
 
     foreach ($operations as $operation) {
@@ -54,9 +48,9 @@ test(Nanomanager::class.'::runOperation()', function () {
         $nanomanagerSpy->expects($operation['expects']);
 
         /** @disregard P1013 */
-        $nanomanagerSpy->runOperation($operation['json']);
+        $nanomanagerSpy->runOperation($operation['operationType'], $operation['parameters']);
     }
-})->only();
+});
 
 describe(Nanomanager::class.'::isValidFilename()', function () {
     it('should not allow directory traversal', function () {

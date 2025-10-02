@@ -130,7 +130,27 @@ class Nanomanager
 
         if ('POST' === $_SERVER['REQUEST_METHOD']) {
             $body = file_get_contents('php://input');
-            $this->runOperation(is_string($body) ? $body : '{}');
+
+            // FormData (for file uploads)
+            if ('' === $body) {
+                $operationType = is_string($_POST['operationType']) ? $_POST['operationType'] : '';
+                $parameters = $_POST;
+            }
+            // JSON body
+            else {
+                $operation = json_decode((string) $body, true);
+                if (!is_array($operation)) {
+                    // TODO - Better error handling
+                    throw new \Exception('Invalid operation');
+                }
+                $operationType = is_string($operation['operationType'] ?? false) ? $operation['operationType'] : '';
+                $parameters = $operation['parameters'];
+                if (!is_array($parameters)) {
+                    $parameters = [];
+                }
+            }
+
+            echo $this->runOperation($operationType, $parameters);
         }
 
         if ($returnOutput) {
@@ -180,20 +200,12 @@ class Nanomanager
         return true;
     }
 
-    public function runOperation(string $operationJSON): void
+    /**
+     * @param OperationType|string                                                    $operationType
+     * @param mixed[]|operation_deleteFile_parameters|operation_renameFile_parameters $parameters
+     */
+    public function runOperation(string $operationType, array $parameters): string
     {
-        $operation = json_decode($operationJSON, true);
-        if (!is_array($operation)) {
-            // TODO - Better error handling
-            throw new \Exception('Invalid operation');
-        }
-
-        $operationType = is_string($operation['operationType'] ?? false) ? $operation['operationType'] : '';
-        $parameters = $operation['parameters'];
-        if (!is_array($parameters)) {
-            $parameters = [];
-        }
-
         // All operation responses are returned as JSON
         header('Content-Type: application/json; charset=utf-8');
 
@@ -231,6 +243,6 @@ class Nanomanager
                 break;
         }
 
-        echo json_encode($operationResult);
+        return (string) json_encode($operationResult);
     }
 }
