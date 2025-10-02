@@ -54,6 +54,23 @@ interface Operations {
       };
     };
   };
+  uploadFile: {
+    parameters: {
+      files: FileList;
+    };
+    result: {
+      data: {
+        /**
+         * List of files that were successfully uploaded.
+         */
+        uploadedFiles: string[];
+        /**
+         * List of files that couldn't be uploaded.
+         */
+        filesWithErrors: string[];
+      };
+    };
+  };
 }
 
 const apiUrl = "http://localhost:8080";
@@ -62,12 +79,30 @@ async function apiRequest<T extends keyof OmitIndexSignature<Operations>>(
   operation: T,
   parameters: Operations[T]["parameters"],
 ): Promise<Operations[T]["result"]> {
-  const response = await fetch(apiUrl, {
-    method: "POST",
-    body: JSON.stringify({
+  let body: string | FormData = "";
+
+  // Handle file uploads as `multipart/form-data`
+  if (operation === "uploadFile") {
+    body = new FormData();
+
+    body.append("operationType", operation);
+
+    for (const file of (parameters as Operations["uploadFile"]["parameters"])
+      .files) {
+      body.append("files[]", file);
+    }
+  }
+  // All other requests are sent as JSON
+  else {
+    body = JSON.stringify({
       operationType: operation,
       parameters,
-    }),
+    });
+  }
+
+  const response = await fetch(apiUrl, {
+    method: "POST",
+    body,
   });
 
   const data: Operations[T]["result"] = await response.json();
