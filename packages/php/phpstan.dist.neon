@@ -7,6 +7,8 @@ parameters:
   excludePaths:
     - */tests/*
   typeAliases:
+    UploadedFiles: 'array{"name": string[], "full_path": string[], "type": string[], "tmp_name": string[], "error": int[], "size": int[]}'
+    OperationType: '"deleteFile"|"listFiles"|"renameFile"|"uploadFile"'
     operation_listFiles_result: '''
       array{
         "data": array{
@@ -36,6 +38,14 @@ parameters:
       array{
         "data": array{
           "success": boolean,
+        }
+      }
+    '''
+    operation_uploadFile_result: '''
+      array{
+        "data": array{
+          "uploadedFiles": string[],
+          "filesWithErrors": string[],
         }
       }
     '''
