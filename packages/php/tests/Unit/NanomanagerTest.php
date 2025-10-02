@@ -226,3 +226,109 @@ describe("'deleteFile' operation", function () {
         expect(file_exists(TestCase::$uploadsDirectory.'/.htaccess'))->toBeTrue();
     });
 });
+
+describe("'uploadFile' operation", function () {
+    it('should upload a file and save it to disk', function () {
+        // Fale filename to upload
+        $fileToUpload = TestCase::$uploadsDirectory.'/tmp-upload-me.txt';
+
+        // Create mock so we can test the code without actually uploading a file
+        $nanomanager = Mockery::mock(Nanomanager::class, [TestCase::$uploadsDirectory])
+            // Allow mocking `move_uploaded_files()`
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial()
+        ;
+
+        // We need to mock `move_uploaded_files` because the underlying PHP's
+        // `move_uploaded_file()` method requires files to actually be uploaded
+        // with POST.
+        /** @disregard P1013 */
+        $nanomanager
+            ->shouldReceive('move_uploaded_file')
+            ->with($fileToUpload, TestCase::$uploadsDirectory.'/uploaded-file.txt')
+            ->andReturn(true)
+        ;
+
+        // Manually mock `$_FILE` contents
+        $_FILES = [
+            'files' => [
+                'name' => [
+                    'uploaded-file.txt',
+                ],
+                'full_path' => [
+                    'uploaded-file.txt',
+                ],
+                'type' => [
+                    'text/plain',
+                ],
+                'tmp_name' => [
+                    $fileToUpload,
+                ],
+                'error' => [
+                    UPLOAD_ERR_OK,
+                ],
+                'size' => [
+                    0,
+                ],
+            ],
+        ];
+
+        /** @disregard P1013 */
+        $result = $nanomanager->operation_uploadFile();
+
+        expect($result['data']['uploadedFiles'][0])->toBe('uploaded-file.txt');
+    });
+
+    it('should not allow invalid filenames', function () {
+        $nanomanager = Mockery::spy(Nanomanager::class, [TestCase::$uploadsDirectory])
+            ->makePartial()
+        ;
+
+        $_FILES = [
+            'files' => [
+                'name' => [
+                    '.htaccess',
+                    '../a.txt',
+                    ' b.txt',
+                ],
+                'full_path' => [
+                    'uploaded-file.txt',
+                    '../a.txt',
+                    ' b.txt',
+                ],
+                'type' => [
+                    'text/plain',
+                    'text/plain',
+                    'text/plain',
+                ],
+                'tmp_name' => [
+                    '/tmp/LOk3EpIU',
+                    '/tmp/OgGpaQL6',
+                    '/tmp/OJh76HDv',
+                ],
+                'error' => [
+                    UPLOAD_ERR_OK,
+                    UPLOAD_ERR_OK,
+                    UPLOAD_ERR_OK,
+                ],
+                'size' => [
+                    0,
+                    0,
+                    0,
+                ],
+            ],
+        ];
+
+        /** @disregard P1013 */
+        $result = $nanomanager->operation_uploadFile();
+
+        trap($result);
+
+        expect($result['data']['uploadedFiles'])->toHaveCount(0);
+        expect($result['data']['filesWithErrors'])->toHaveCount(3);
+
+        // `move_uploaded_files()` should not be called if the filename is
+        // invalid.
+        $nanomanager->shouldNotHaveReceived('move_uploaded_file');
+    });
+});

@@ -121,6 +121,50 @@ class Nanomanager
         return ['data' => ['success' => $success]];
     }
 
+    /**
+     * Upload a file.
+     *
+     * @return operation_uploadFile_result
+     */
+    public function operation_uploadFile(): array
+    {
+        $result = [
+            'data' => [
+                'uploadedFiles' => [],
+                'filesWithErrors' => [],
+            ],
+        ];
+
+        // Return if there are no files uploaded
+        if ([] === $_FILES) {
+            return $result;
+        }
+
+        /**
+         * @var UploadedFiles
+         */
+        $files = $_FILES['files'] ?? [];
+
+        foreach ($files['error'] as $i => $error) {
+            $name = $files['name'][$i];
+            $tmp_name = $files['tmp_name'][$i];
+            $success = false;
+
+            // Validate filename and make sure there was no upload error
+            if ($this->isValidFilename($name) && UPLOAD_ERR_OK === $error) {
+                $success = $this->move_uploaded_file($tmp_name, "{$this->directory}/{$name}");
+            }
+
+            if ($success) {
+                $result['data']['uploadedFiles'][] = $name;
+            } else {
+                $result['data']['filesWithErrors'][] = $name;
+            }
+        }
+
+        return $result;
+    }
+
     public function run(bool $returnOutput = false): string
     {
         $output = '';
@@ -233,6 +277,11 @@ class Nanomanager
 
                 break;
 
+            case 'uploadFile':
+                $operationResult = $this->operation_uploadFile();
+
+                break;
+
             default:
                 http_response_code(400);
 
@@ -244,5 +293,14 @@ class Nanomanager
         }
 
         return (string) json_encode($operationResult);
+    }
+
+    /**
+     * Mockable wrapper of `move_uploaded_file()` for testing purposes, since
+     * `move_uploaded_file()` requires files to actually be uploaded with POST.
+     */
+    protected function move_uploaded_file(string $from, string $to): bool
+    {
+        return move_uploaded_file($from, $to);
     }
 }
