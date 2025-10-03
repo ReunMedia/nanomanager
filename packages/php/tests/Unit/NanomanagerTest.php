@@ -322,8 +322,6 @@ describe("'uploadFile' operation", function () {
         /** @disregard P1013 */
         $result = $nanomanager->operation_uploadFile();
 
-        trap($result);
-
         expect($result['data']['uploadedFiles'])->toHaveCount(0);
         expect($result['data']['filesWithErrors'])->toHaveCount(3);
 
