@@ -12,3 +12,7 @@ tasks:
     script: "bun run build"
     inputs:
       - "@group(sources)"
+    deps:
+      - format
+      - lint
+      - test

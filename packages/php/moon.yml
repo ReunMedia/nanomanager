@@ -1,10 +1,19 @@
+dependsOn:
+  - frontend
+
 tasks:
   build:
     command:
-      - "echo"
-      - "TODO - Build PHP app"
+      - "vendor/bin/box"
+      - "compile"
     deps:
-      - frontend:build
+      - format
+      - lint
+      - test
+      - ^:build
+    inputs:
+      - "@group(phpSources)"
+      - "box.json"
 
   trap:
     command: composer trap

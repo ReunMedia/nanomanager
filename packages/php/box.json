@@ -1,0 +1,12 @@
+{
+  "base-path": "..",
+  "main": "php/src/Nanomanager/Nanomanager.php",
+  "output": "php/dist/Nanomanager.phar",
+  "check-requirements": false,
+  "files": ["frontend/dist/index.html"],
+  "directories": ["php/src/Nanomanager"],
+  "alias": "nanomanager.phar",
+  "shebang": false,
+  "dump-autoload": false,
+  "compactors": ["Tools\\MinifierCompactor"]
+}

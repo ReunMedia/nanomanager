@@ -15,13 +15,16 @@
     },
     "require-dev": {
         "buggregator/trap": "^1.13",
+        "humbug/box": "^4.6",
         "mockery/mockery": "^1.6",
-        "pestphp/pest": "^4.0"
+        "pestphp/pest": "^4.0",
+        "php-code-minifier/php-code-minifier": "^1.0"
     },
     "autoload": {
         "psr-4": {
             "Nanomanager\\": "src/Nanomanager",
-            "Tests\\": "tests/"
+            "Tests\\": "tests/",
+            "Tools\\": "tools/"
         }
     },
     "config": {
@@ -36,6 +39,11 @@
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "php -S 0.0.0.0:8080 -t tests/Integration"
+        ],
+        "preview": [
+            "Composer\\Config::disableProcessTimeout",
+            "@putenv NANOMANAGER_PREVIEW=true",
+            "php -d variables_order=EGPCS -S 0.0.0.0:8080 -t tests/Integration"
         ],
         "trap": [
             "Composer\\Config::disableProcessTimeout",

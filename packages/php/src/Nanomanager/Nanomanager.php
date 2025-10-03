@@ -195,6 +195,14 @@ class Nanomanager
             }
 
             echo $this->runOperation($operationType, $parameters);
+        } elseif ('GET' === $_SERVER['REQUEST_METHOD']) {
+            $frontendFile = 'phar://nanomanager.phar/frontend/dist/index.html';
+            if (file_exists($frontendFile)) {
+                // @phpstan-ignore require.fileNotFound
+                require $frontendFile;
+            } else {
+                throw new \Exception("Unable to open frontend file inside PHAR. This means that you're probably running Nanomanager in dev mode and need to open frontend separately by running `bun moon run frontend:dev`.");
+            }
         }
 
         if ($returnOutput) {
