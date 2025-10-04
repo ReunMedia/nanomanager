@@ -2,9 +2,8 @@
   import FileList from "./lib/components/FileList.svelte";
 </script>
 
-<main class="container">
+<main>
   <h1>Nano File Manager</h1>
-  <p>Files:</p>
   <FileList />
 </main>
 
