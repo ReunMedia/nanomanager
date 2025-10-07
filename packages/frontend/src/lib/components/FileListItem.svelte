@@ -1,5 +1,6 @@
 <script lang="ts">
   import { apiRequest } from "../utils/apiRequest";
+  import { showToast } from "../utils/toasts.svelte";
 
   interface Props {
     /**
@@ -145,7 +146,7 @@
 
   function onClickCopyLink() {
     navigator.clipboard.writeText(fileUrl);
-    // TODO - Show toast notification when link copied
+    showToast("Link copied to clipboard");
   }
 </script>
 

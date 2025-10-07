@@ -1,5 +1,6 @@
 <script lang="ts">
   import { apiRequest } from "../utils/apiRequest";
+  import { showToast } from "../utils/toasts.svelte";
   import FileListItem from "./FileListItem.svelte";
   import FileUpload from "./FileUpload.svelte";
 
@@ -20,6 +21,8 @@
       files[index] = newName;
     }
     sortFiles();
+
+    showToast(`File renamed to '${newName}'`);
   }
 
   function onDeleted(filename: string) {
@@ -27,6 +30,8 @@
     if (index !== -1) {
       files.splice(index, 1);
     }
+
+    showToast(`File '${filename}' deleted`);
   }
 
   function onUploaded(uploadedFiles: string[]) {
@@ -34,6 +39,12 @@
     // uploaded with a same name that already exsits.
     files = [...new Set([...files, ...uploadedFiles])];
     sortFiles();
+
+    showToast(
+      uploadedFiles.length === 1
+        ? "1 file uploaded"
+        : `${uploadedFiles.length} files uploaded`,
+    );
   }
 
   function sortFiles() {
