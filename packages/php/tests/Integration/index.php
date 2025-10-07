@@ -7,8 +7,9 @@ use Nanomanager\Nanomanager;
 // Disable CORS in development
 header('Access-Control-Allow-Origin: *');
 
-// Create test data directory
-$dir = __DIR__.'/../_uploads';
+// Create test uploads directory
+$uploadsDir = '_uploads';
+$dir = __DIR__.'/'.$uploadsDir;
 if (!is_dir($dir)) {
     mkdir($dir);
 }
@@ -22,4 +23,8 @@ else {
     require_once __DIR__.'/../../vendor/autoload.php';
 }
 
-(new Nanomanager($dir))->run();
+$proto = ($_SERVER['HTTPS'] ?? false) ? 'https' : 'http';
+$host = is_string($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+$baseUrl = "{$proto}://{$host}/{$uploadsDir}";
+
+(new Nanomanager($dir, $baseUrl))->run();

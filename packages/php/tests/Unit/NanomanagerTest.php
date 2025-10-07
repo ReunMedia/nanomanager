@@ -5,12 +5,19 @@ declare(strict_types=1);
 use Nanomanager\Nanomanager;
 use Tests\TestCase;
 
+function createNanomanager(): Nanomanager
+{
+    return new Nanomanager(TestCase::$uploadsDirectory, '');
+}
+
+function createNanomanagerMock() {}
+
 describe(Nanomanager::class, function () {
     it('should allow uploading files', function () {})->todo();
 });
 
 test(Nanomanager::class.'::runOperation()', function () {
-    $nanomanagerSpy = Mockery::mock(Nanomanager::class, [TestCase::$uploadsDirectory])->makePartial();
+    $nanomanagerSpy = Mockery::mock(Nanomanager::class, [TestCase::$uploadsDirectory, ''])->makePartial();
 
     $operations = [];
 
@@ -54,7 +61,7 @@ test(Nanomanager::class.'::runOperation()', function () {
 
 describe(Nanomanager::class.'::isValidFilename()', function () {
     it('should not allow directory traversal', function () {
-        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+        $nanomanager = createNanomanager();
 
         // Down
         expect($nanomanager->isValidFilename('subdir/renamed.txt'))->toBeFalse();
@@ -67,26 +74,26 @@ describe(Nanomanager::class.'::isValidFilename()', function () {
     });
 
     it('should not allow empty filename', function () {
-        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+        $nanomanager = createNanomanager();
 
         expect($nanomanager->isValidFilename(''))->toBeFalse();
     });
 
     it('should not allow filename to begin or end with a space', function () {
-        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+        $nanomanager = createNanomanager();
 
         expect($nanomanager->isValidFilename(' hello.txt'))->toBeFalse();
         expect($nanomanager->isValidFilename('hello.txt '))->toBeFalse();
     });
 
     it('should not allow dotfiles', function () {
-        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+        $nanomanager = createNanomanager();
 
         expect($nanomanager->isValidFilename('.htaccess'))->toBeFalse();
     });
 
     it('should not allow invalid characters', function () {
-        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+        $nanomanager = createNanomanager();
 
         expect($nanomanager->isValidFilename('.htaccess'))->toBeFalse();
 
@@ -100,7 +107,7 @@ describe(Nanomanager::class.'::isValidFilename()', function () {
 
 describe("'listFiles' operation", function () {
     it('should return files in naturally sorted case-insensitive order', function () {
-        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+        $nanomanager = createNanomanager();
         $result = $nanomanager->operation_listFiles();
         $files = $result['data']['files'];
         expect($files)->toHaveCount(5);
@@ -108,7 +115,7 @@ describe("'listFiles' operation", function () {
     });
 
     it('should not return dotfiles', function () {
-        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+        $nanomanager = createNanomanager();
         $result = $nanomanager->operation_listFiles();
         $files = $result['data']['files'];
         expect($files)->not()->toContain('.htaccess');
@@ -117,7 +124,7 @@ describe("'listFiles' operation", function () {
 
 describe("'renameFile' operation", function () {
     it('should rename file', function () {
-        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+        $nanomanager = createNanomanager();
         $result = $nanomanager->operation_renameFile(['oldName' => 'hello.txt', 'newName' => 'renamed.txt']);
         expect($result['data']['newName'])->toBe('renamed.txt');
 
@@ -131,13 +138,13 @@ describe("'renameFile' operation", function () {
         expect(file_exists(TestCase::$uploadsDirectory.'/hello.txt'))->toBeTrue();
     });
     it("should fail if the original file doesn't exist", function () {
-        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+        $nanomanager = createNanomanager();
         $result = $nanomanager->operation_renameFile(['oldName' => 'not-found.txt', 'newName' => 'renamed.txt']);
         expect($result['data']['newName'])->not()->toBe('renamed.txt');
         expect($result['data']['newName'])->toBe('not-found.txt');
     });
     it('should validate new and old filename before renaming', function () {
-        $nanomanagerSpy = Mockery::spy(Nanomanager::class, [TestCase::$uploadsDirectory])->makePartial();
+        $nanomanagerSpy = Mockery::spy(Nanomanager::class, [TestCase::$uploadsDirectory, ''])->makePartial();
 
         /** @disregard P1013 */
         $nanomanagerSpy->operation_renameFile(['oldName' => 'hello.txt', 'newName' => 'Second-file.txt']);
@@ -153,12 +160,12 @@ describe("'renameFile' operation", function () {
         ;
     });
     it('should silently fail if both old and new name are identical', function () {
-        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+        $nanomanager = createNanomanager();
         $result = $nanomanager->operation_renameFile(['oldName' => 'hello.txt', 'newName' => 'hello.txt']);
         expect($result['data']['newName'])->toBe('hello.txt');
     });
     it('should not allow renaming to a name that already exists', function () {
-        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+        $nanomanager = createNanomanager();
         $result = $nanomanager->operation_renameFile(['oldName' => 'hello.txt', 'newName' => 'Second-file.txt']);
         expect($result['data']['newName'])->toBe('hello.txt');
 
@@ -180,7 +187,7 @@ describe("'deleteFile' operation", function () {
         $fileToDelete = TestCase::$uploadsDirectory.'/delete-me.txt';
         touch($fileToDelete);
 
-        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+        $nanomanager = createNanomanager();
 
         expect(file_exists($fileToDelete))->toBeTrue();
         $result = $nanomanager->operation_deleteFile(['filename' => 'delete-me.txt']);
@@ -196,7 +203,7 @@ describe("'deleteFile' operation", function () {
     });
 
     it('should validate filename before deleting', function () {
-        $nanomanagerSpy = Mockery::spy(Nanomanager::class, [TestCase::$uploadsDirectory])->makePartial();
+        $nanomanagerSpy = Mockery::spy(Nanomanager::class, [TestCase::$uploadsDirectory, ''])->makePartial();
 
         /** @disregard P1013 */
         $nanomanagerSpy->operation_deleteFile(['filename' => 'delete-me.txt']);
@@ -208,14 +215,14 @@ describe("'deleteFile' operation", function () {
     });
 
     it('should make sure file exists before deleting', function () {
-        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+        $nanomanager = createNanomanager();
 
         $result = $nanomanager->operation_deleteFile(['filename' => 'not-found.txt']);
         expect($result['data']['success'])->toBeFalse();
     });
 
     it('should not allow deleting files or directories not managed by Nanomanager', function () {
-        $nanomanager = new Nanomanager(TestCase::$uploadsDirectory);
+        $nanomanager = createNanomanager();
 
         $result = $nanomanager->operation_deleteFile(['filename' => 'subdir']);
         expect($result['data']['success'])->toBeFalse();
@@ -233,7 +240,7 @@ describe("'uploadFile' operation", function () {
         $fileToUpload = TestCase::$uploadsDirectory.'/tmp-upload-me.txt';
 
         // Create mock so we can test the code without actually uploading a file
-        $nanomanager = Mockery::mock(Nanomanager::class, [TestCase::$uploadsDirectory])
+        $nanomanager = Mockery::mock(Nanomanager::class, [TestCase::$uploadsDirectory, ''])
             // Allow mocking `move_uploaded_files()`
             ->shouldAllowMockingProtectedMethods()
             ->makePartial()
@@ -280,7 +287,7 @@ describe("'uploadFile' operation", function () {
     });
 
     it('should not allow invalid filenames', function () {
-        $nanomanager = Mockery::spy(Nanomanager::class, [TestCase::$uploadsDirectory])
+        $nanomanager = Mockery::spy(Nanomanager::class, [TestCase::$uploadsDirectory, ''])
             ->makePartial()
         ;
 

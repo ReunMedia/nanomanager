@@ -16,8 +16,15 @@ class Nanomanager
     /**
      * @throws \RuntimeException if directory couldn't be opened
      */
-    public function __construct(string $directory)
-    {
+    public function __construct(
+        string $directory,
+        /**
+         * Base URL used when linking to files.
+         *
+         * @var string
+         */
+        private string $baseUrl,
+    ) {
         $realDir = realpath($directory);
         $handle = false;
         if (false !== $realDir) {
@@ -53,7 +60,7 @@ class Nanomanager
         // Sort files in natural case-insensitive order
         sort($files, SORT_NATURAL | SORT_FLAG_CASE);
 
-        return ['data' => ['files' => $files]];
+        return ['data' => ['files' => $files, 'baseUrl' => $this->baseUrl]];
     }
 
     /**

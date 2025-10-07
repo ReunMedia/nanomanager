@@ -12,7 +12,8 @@ parameters:
     operation_listFiles_result: '''
       array{
         "data": array{
-          "files": string[]
+          "files": string[],
+          "baseUrl": string
         }
       }
     '''
