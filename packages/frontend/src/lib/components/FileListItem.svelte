@@ -15,91 +15,155 @@
 
   let { filename, onDeleted, onRenamed }: Props = $props();
 
+  let activeOperation = $state<ConfirmableOperation | null>(null);
   /**
-   * Keeps track of previous filename during renaming.
+   * Current filename input value
    */
-  let previousName = $state("");
   let currentName = $state(filename);
-  let renamingActive = $derived(previousName !== "");
-
   /**
    * Input element
    */
   let inputEl: HTMLInputElement | undefined;
 
-  function onClickRename() {
-    previousName = currentName;
+  interface ConfirmableOperation {
+    /**
+     * Text displayed before cancel and confirm buttons
+     */
+    confirmationText?: string;
 
-    // Focus filename input and select text before file extension
-    const caretPosition = currentName.lastIndexOf(".");
-    inputEl?.focus();
-    inputEl?.setSelectionRange(0, caretPosition);
+    /**
+     * Called when confirm button is pressed
+     */
+    confirm(): void;
+
+    /**
+     * Called when cancel button is pressed
+     */
+    cancel(): void;
+
+    /**
+     * Called when button to activate operation is pressed
+     */
+    activate?(): void;
   }
 
-  function onClickRenameCancel() {
-    currentName = previousName;
-    previousName = "";
+  class RenameOperation implements ConfirmableOperation {
+    /**
+     * Keeps track of previous filename during renaming.
+     */
+    previousName = $state("");
 
-    // Deselect input
-    inputEl?.blur();
-    document.getSelection()?.empty();
+    confirm = async () => {
+      // Don't run API call if name didn't change or we're not editing a name
+      if (this.previousName === "" || this.previousName === currentName) {
+        this.cancel();
+        return;
+      }
+
+      const response = await apiRequest("renameFile", {
+        oldName: this.previousName,
+        newName: currentName,
+      });
+
+      const { newName } = response.data;
+
+      if (newName === currentName) {
+        // TODO - Show toast on successful rename
+        onRenamed(this.previousName, currentName);
+      } else {
+        // TODO - Show toast on rename failure
+        currentName = this.previousName;
+      }
+
+      this.previousName = "";
+
+      activeOperation = null;
+    };
+
+    cancel = () => {
+      currentName = this.previousName;
+      this.previousName = "";
+
+      // Deselect input
+      inputEl?.blur();
+      document.getSelection()?.empty();
+
+      activeOperation = null;
+    };
+
+    activate = () => {
+      this.previousName = currentName;
+
+      // Focus filename input and select text before file extension
+      const caretPosition = currentName.lastIndexOf(".");
+      inputEl?.focus();
+      inputEl?.setSelectionRange(0, caretPosition);
+    };
   }
 
-  async function onClickDelete() {
-    const response = await apiRequest("deleteFile", {
-      filename: currentName,
-    });
+  class DeleteOperation implements ConfirmableOperation {
+    confirmationText = "Delete file?";
 
-    if (response.data.success === true) {
-      onDeleted(currentName);
-    }
+    confirm = async () => {
+      const response = await apiRequest("deleteFile", {
+        filename: currentName,
+      });
+
+      if (response.data.success === true) {
+        onDeleted(currentName);
+      }
+
+      activeOperation = null;
+    };
+
+    cancel = () => {
+      activeOperation = null;
+    };
   }
 
-  async function onClickRenameConfirm() {
-    // Don't run API call if name didn't change or we're not editing a name
-    if (previousName === "" || previousName === currentName) {
-      onClickRenameCancel();
-      return;
-    }
+  const renameOperation = new RenameOperation();
+  const deleteOperation = new DeleteOperation();
 
-    const response = await apiRequest("renameFile", {
-      oldName: previousName,
-      newName: currentName,
-    });
-
-    const { newName } = response.data;
-
-    if (newName === currentName) {
-      console.log("Rename successful");
-      console.log("TODO - Show toast on successful rename");
-      onRenamed(previousName, currentName);
-    } else {
-      console.log("Rename failed");
-      console.log("TODO - Show toast on rename failure");
-      currentName = previousName;
-    }
-
-    previousName = "";
+  function activateOperation(operation: ConfirmableOperation) {
+    activeOperation = operation;
+    activeOperation.activate?.();
   }
 </script>
 
 <tr>
   <td style="width: 100%">
     <input
-      readonly={renamingActive.valueOf() === false}
+      readonly={activeOperation !== renameOperation}
       bind:value={currentName}
       bind:this={inputEl}
     />
   </td>
   <td>
-    <div role="group">
-      {#if renamingActive}
-        <button onclick={onClickRenameCancel}>❌</button>
-        <button onclick={onClickRenameConfirm}>✅</button>
-      {:else}
-        <button onclick={onClickRename}>✏️</button>
-        <button onclick={onClickDelete}>🗑️</button>
+    <div class="button-container">
+      {#if activeOperation?.confirmationText}
+        <p class="confirmation-text">{activeOperation.confirmationText}</p>
       {/if}
+      <div role="group">
+        {#if activeOperation}
+          <button onclick={activeOperation.cancel}>❌</button>
+          <button onclick={activeOperation.confirm}>✅</button>
+        {:else}
+          <button onclick={() => activateOperation(renameOperation)}>✏️</button>
+          <button onclick={() => activateOperation(deleteOperation)}>🗑️</button>
+        {/if}
+      </div>
     </div>
   </td>
 </tr>
+
+<style>
+  .button-container {
+    display: flex;
+    align-items: center;
+    float: right;
+    gap: 1em;
+  }
+  .confirmation-text {
+    white-space: nowrap;
+  }
+</style>
