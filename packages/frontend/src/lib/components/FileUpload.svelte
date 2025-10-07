@@ -45,20 +45,18 @@
   }
 </script>
 
-<tr>
-  <td style="width: 100%">
-    <input
-      type="file"
-      onchange={onFileInputChange}
-      bind:this={inputEl}
-      multiple
-    />
-  </td>
-  <td>
+<li>
+  <input
+    type="file"
+    onchange={onFileInputChange}
+    bind:this={inputEl}
+    multiple
+  />
+  <div>
     <button
       disabled={!uploadButtonEnabled}
-      style="float: right; width: 7em;"
+      style="width: 7em;"
       onclick={onClickUpload}>📤</button
     >
-  </td>
-</tr>
+  </div>
+</li>

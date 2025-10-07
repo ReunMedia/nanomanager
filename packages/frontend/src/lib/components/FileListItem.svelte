@@ -143,38 +143,33 @@
   }
 </script>
 
-<tr>
-  <td style="width: 100%">
-    <input
-      readonly={activeOperation !== renameOperation}
-      bind:value={currentName}
-      bind:this={inputEl}
-    />
-  </td>
-  <td>
-    <div class="button-container">
-      {#if activeOperation?.confirmationText}
-        <p class="confirmation-text">{activeOperation.confirmationText}</p>
+<li>
+  <input
+    readonly={activeOperation !== renameOperation}
+    bind:value={currentName}
+    bind:this={inputEl}
+  />
+  <div class="button-container">
+    {#if activeOperation?.confirmationText}
+      <p class="confirmation-text">{activeOperation.confirmationText}</p>
+    {/if}
+    <div role="group">
+      {#if activeOperation}
+        <button onclick={activeOperation.cancel}>❌</button>
+        <button onclick={activeOperation.confirm}>✅</button>
+      {:else}
+        <button onclick={onClickCopyLink}>🔗</button>
+        <button onclick={() => activateOperation(renameOperation)}>✏️</button>
+        <button onclick={() => activateOperation(deleteOperation)}>🗑️</button>
       {/if}
-      <div role="group">
-        {#if activeOperation}
-          <button onclick={activeOperation.cancel}>❌</button>
-          <button onclick={activeOperation.confirm}>✅</button>
-        {:else}
-          <button onclick={onClickCopyLink}>🔗</button>
-          <button onclick={() => activateOperation(renameOperation)}>✏️</button>
-          <button onclick={() => activateOperation(deleteOperation)}>🗑️</button>
-        {/if}
-      </div>
     </div>
-  </td>
-</tr>
+  </div>
+</li>
 
 <style>
   .button-container {
     display: flex;
     align-items: center;
-    float: right;
     gap: 1em;
   }
   .confirmation-text {

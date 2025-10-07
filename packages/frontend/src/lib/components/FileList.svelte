@@ -41,9 +41,9 @@
   }
 </script>
 
-<table>
+<ul>
   <FileUpload {onUploaded} />
   {#each files as file (file)}
     <FileListItem {baseUrl} filename={file} {onDeleted} {onRenamed} />
   {/each}
-</table>
+</ul>

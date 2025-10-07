@@ -60,24 +60,18 @@ main {
 }
 
 h1 {
-  margin: 1em 0 0.5em 0;
+  margin: 1em 0;
 }
 
-table {
-  border-spacing: 0 1em;
+li {
+  display: flex;
+  gap: 2em;
+  flex-direction: row;
+  min-height: 1px;
 }
 
-td {
-  /* This hack allows us to use `height: 100%` for inputs inside table cells */
-  height: 1px;
-}
-
-td + td {
-  /* Padding is used insteade of border-spacing to avoid border gap */
-  padding-left: 2em;
-}
-
-tr + tr td {
+li + li {
+  margin-top: 1em;
   padding-top: 1em;
   border-top: var(--color-border) solid 1px;
 }
@@ -101,7 +95,6 @@ button {
   border: var(--color-border) solid 1px;
   border-radius: var(--rounded);
   padding: 0.5em 1em;
-  height: 100%;
 }
 
 input[type="file"] {
