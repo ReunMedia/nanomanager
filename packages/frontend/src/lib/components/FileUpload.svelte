@@ -57,7 +57,7 @@
   <td>
     <button
       disabled={!uploadButtonEnabled}
-      style:width="100%"
+      style="float: right; width: 7em;"
       onclick={onClickUpload}>📤</button
     >
   </td>

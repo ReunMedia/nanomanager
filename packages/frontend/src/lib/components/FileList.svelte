@@ -4,9 +4,12 @@
   import FileUpload from "./FileUpload.svelte";
 
   let files = $state<string[]>([]);
+  let baseUrl = $state("");
 
   async function fetchFiles() {
-    files = (await apiRequest("listFiles", {})).data.files;
+    const data = (await apiRequest("listFiles", {})).data;
+    files = data.files;
+    baseUrl = data.baseUrl;
   }
 
   fetchFiles();
@@ -41,6 +44,6 @@
 <table>
   <FileUpload {onUploaded} />
   {#each files as file (file)}
-    <FileListItem filename={file} {onDeleted} {onRenamed} />
+    <FileListItem {baseUrl} filename={file} {onDeleted} {onRenamed} />
   {/each}
 </table>

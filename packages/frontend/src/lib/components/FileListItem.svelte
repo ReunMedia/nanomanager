@@ -2,7 +2,14 @@
   import { apiRequest } from "../utils/apiRequest";
 
   interface Props {
+    /**
+     * Initial filename passed via props. Use `currentName` instead of this.
+     */
     filename: string;
+    /**
+     * Base URL used for file link
+     */
+    baseUrl: string;
     /**
      * Called after file is renamed.
      */
@@ -13,7 +20,7 @@
     onDeleted: (filename: string) => void;
   }
 
-  let { filename, onDeleted, onRenamed }: Props = $props();
+  let { filename, baseUrl, onDeleted, onRenamed }: Props = $props();
 
   let activeOperation = $state<ConfirmableOperation | null>(null);
   /**
@@ -128,6 +135,12 @@
     activeOperation = operation;
     activeOperation.activate?.();
   }
+
+  function onClickCopyLink() {
+    const trimmedBaseUrl = baseUrl.replace(/\/+$/, "");
+    navigator.clipboard.writeText(trimmedBaseUrl + "/" + currentName);
+    // TODO - Show toast notification when link copied
+  }
 </script>
 
 <tr>
@@ -148,6 +161,7 @@
           <button onclick={activeOperation.cancel}>❌</button>
           <button onclick={activeOperation.confirm}>✅</button>
         {:else}
+          <button onclick={onClickCopyLink}>🔗</button>
           <button onclick={() => activateOperation(renameOperation)}>✏️</button>
           <button onclick={() => activateOperation(deleteOperation)}>🗑️</button>
         {/if}

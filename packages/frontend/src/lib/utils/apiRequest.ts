@@ -26,6 +26,10 @@ interface Operations {
          * List of filenames
          */
         files: string[];
+        /**
+         * Base URL used when linking to files
+         */
+        baseUrl: string;
       };
     };
   };
