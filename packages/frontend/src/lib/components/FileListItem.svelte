@@ -31,6 +31,10 @@
    * Input element
    */
   let inputEl: HTMLInputElement | undefined;
+  /**
+   * URL to file
+   */
+  let fileUrl = $derived(baseUrl.replace(/\/+$/, "") + "/" + currentName);
 
   interface ConfirmableOperation {
     /**
@@ -98,7 +102,10 @@
       activeOperation = null;
     };
 
-    activate = () => {
+    activate = async () => {
+      // Wait for filename input to render after setting it to `display: block`
+      await new Promise(requestAnimationFrame);
+
       this.previousName = currentName;
 
       // Focus filename input and select text before file extension
@@ -137,18 +144,26 @@
   }
 
   function onClickCopyLink() {
-    const trimmedBaseUrl = baseUrl.replace(/\/+$/, "");
-    navigator.clipboard.writeText(trimmedBaseUrl + "/" + currentName);
+    navigator.clipboard.writeText(fileUrl);
     // TODO - Show toast notification when link copied
   }
 </script>
 
 <li>
-  <input
-    readonly={activeOperation !== renameOperation}
-    bind:value={currentName}
-    bind:this={inputEl}
-  />
+  <div class="filename-container">
+    <input
+      style:display={activeOperation === renameOperation ? "" : "none"}
+      bind:value={currentName}
+      bind:this={inputEl}
+    />
+
+    <a
+      class="filename-link bordered"
+      style:display={activeOperation === renameOperation ? "none" : ""}
+      href={fileUrl}>{currentName}</a
+    >
+  </div>
+
   <div class="button-container">
     {#if activeOperation?.confirmationText}
       <p class="confirmation-text">{activeOperation.confirmationText}</p>
@@ -167,6 +182,19 @@
 </li>
 
 <style>
+  .filename-link {
+    text-decoration: none;
+    /* We're using `.bordered` to make `<a>` visually identical to input but
+       hide the actual border */
+    border-color: transparent;
+    width: 100%;
+  }
+
+  .filename-container {
+    flex: 1;
+    display: flex;
+  }
+
   .button-container {
     display: flex;
     align-items: center;

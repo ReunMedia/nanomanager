@@ -89,7 +89,8 @@ input {
 
 input,
 input::file-selector-button,
-button {
+button,
+.bordered {
   color: inherit;
   background: transparent;
   border: var(--color-border) solid 1px;
