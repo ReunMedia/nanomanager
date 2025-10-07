@@ -45,18 +45,11 @@
   }
 </script>
 
-<li>
-  <input
-    type="file"
-    onchange={onFileInputChange}
-    bind:this={inputEl}
-    multiple
-  />
-  <div>
-    <button
-      disabled={!uploadButtonEnabled}
-      style="width: 7em;"
-      onclick={onClickUpload}>📤</button
-    >
-  </div>
-</li>
+<input type="file" onchange={onFileInputChange} bind:this={inputEl} multiple />
+<div>
+  <button
+    disabled={!uploadButtonEnabled}
+    style="width: 7em;"
+    onclick={onClickUpload}>📤</button
+  >
+</div>

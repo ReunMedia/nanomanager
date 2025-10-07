@@ -149,37 +149,35 @@
   }
 </script>
 
-<li>
-  <div class="filename-container">
-    <input
-      style:display={activeOperation === renameOperation ? "" : "none"}
-      bind:value={currentName}
-      bind:this={inputEl}
-    />
+<div class="filename-container">
+  <input
+    style:display={activeOperation === renameOperation ? "" : "none"}
+    bind:value={currentName}
+    bind:this={inputEl}
+  />
 
-    <a
-      class="filename-link bordered"
-      style:display={activeOperation === renameOperation ? "none" : ""}
-      href={fileUrl}>{currentName}</a
-    >
-  </div>
+  <a
+    class="filename-link bordered"
+    style:display={activeOperation === renameOperation ? "none" : ""}
+    href={fileUrl}>{currentName}</a
+  >
+</div>
 
-  <div class="button-container">
-    {#if activeOperation?.confirmationText}
-      <p class="confirmation-text">{activeOperation.confirmationText}</p>
+<div class="button-container">
+  {#if activeOperation?.confirmationText}
+    <p class="confirmation-text">{activeOperation.confirmationText}</p>
+  {/if}
+  <div role="group">
+    {#if activeOperation}
+      <button onclick={activeOperation.cancel}>❌</button>
+      <button onclick={activeOperation.confirm}>✅</button>
+    {:else}
+      <button onclick={onClickCopyLink}>🔗</button>
+      <button onclick={() => activateOperation(renameOperation)}>✏️</button>
+      <button onclick={() => activateOperation(deleteOperation)}>🗑️</button>
     {/if}
-    <div role="group">
-      {#if activeOperation}
-        <button onclick={activeOperation.cancel}>❌</button>
-        <button onclick={activeOperation.confirm}>✅</button>
-      {:else}
-        <button onclick={onClickCopyLink}>🔗</button>
-        <button onclick={() => activateOperation(renameOperation)}>✏️</button>
-        <button onclick={() => activateOperation(deleteOperation)}>🗑️</button>
-      {/if}
-    </div>
   </div>
-</li>
+</div>
 
 <style>
   .filename-link {

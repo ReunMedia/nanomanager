@@ -29,6 +29,11 @@
   }
 }
 
+ul {
+  padding: 0;
+  list-style: none;
+}
+
 body {
   background: var(--color-bg);
   /* https://systemfontstack.com/ */
@@ -61,19 +66,6 @@ main {
 
 h1 {
   margin: 1em 0;
-}
-
-li {
-  display: flex;
-  gap: 2em;
-  flex-direction: row;
-  min-height: 1px;
-}
-
-li + li {
-  margin-top: 1em;
-  padding-top: 1em;
-  border-top: var(--color-border) solid 1px;
 }
 
 input,

@@ -41,9 +41,30 @@
   }
 </script>
 
-<ul>
-  <FileUpload {onUploaded} />
+<ul class="file-list">
+  <li>
+    <FileUpload {onUploaded} />
+  </li>
   {#each files as file (file)}
-    <FileListItem {baseUrl} filename={file} {onDeleted} {onRenamed} />
+    <li>
+      <FileListItem {baseUrl} filename={file} {onDeleted} {onRenamed} />
+    </li>
   {/each}
 </ul>
+
+<style>
+  .file-list {
+    li {
+      display: flex;
+      gap: 2em;
+      flex-direction: row;
+      min-height: 1px;
+    }
+
+    & li + li {
+      margin-top: 1em;
+      padding-top: 1em;
+      border-top: var(--color-border) solid 1px;
+    }
+  }
+</style>
