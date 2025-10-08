@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import { toasts } from "../utils/toasts.svelte";
+  import { toasts } from "../utils/toasts";
   import { sineOut } from "svelte/easing";
 </script>
 

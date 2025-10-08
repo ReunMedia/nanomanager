@@ -1,6 +1,6 @@
 <script lang="ts">
   import { apiRequest } from "../utils/apiRequest";
-  import { showToast } from "../utils/toasts.svelte";
+  import { showToast } from "../utils/toasts";
   import FileListItem from "./FileListItem.svelte";
   import FileUpload from "./FileUpload.svelte";
 
