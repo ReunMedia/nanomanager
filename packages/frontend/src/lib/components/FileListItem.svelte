@@ -114,6 +114,14 @@
       inputEl?.focus();
       inputEl?.setSelectionRange(0, caretPosition);
     };
+
+    onInputKeydown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        this.confirm();
+      } else if (e.key === "Escape") {
+        this.cancel();
+      }
+    };
   }
 
   class DeleteOperation implements ConfirmableOperation {
@@ -155,6 +163,7 @@
     style:display={activeOperation === renameOperation ? "" : "none"}
     bind:value={currentName}
     bind:this={inputEl}
+    onkeydown={renameOperation.onInputKeydown}
   />
 
   <a
