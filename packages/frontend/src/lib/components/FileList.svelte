@@ -54,7 +54,7 @@
 
 <ul class="file-list">
   <li>
-    <FileUpload {onUploaded} />
+    <FileUpload currentFiles={new Set(files)} {onUploaded} />
   </li>
   {#each files as file (file)}
     <li>
