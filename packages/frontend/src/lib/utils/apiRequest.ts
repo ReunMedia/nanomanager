@@ -1,4 +1,10 @@
-import type { EmptyObject, OmitIndexSignature } from "type-fest";
+import type {
+  operation_deleteFile,
+  operation_listFiles,
+  operation_renameFile,
+  operation_uploadFile,
+  OperationType,
+} from "../../types/api";
 
 /**
  * URL is set by Nanomanager backend in production
@@ -10,84 +16,17 @@ const apiUrl = import.meta.env.DEV
   ? "http://localhost:8080"
   : "%NANOMANAGER_API_URL%";
 
-interface Operation {
-  /**
-   * Input parameters of the operation
-   */
-  parameters: object;
-  /**
-   * Operation result
-   */
-  result: {
-    /**
-     * Returned data
-     */
-    data: Record<string, unknown>;
-  };
-}
+type Operations = Pick<
+  {
+    listFiles: operation_listFiles;
+    renameFile: operation_renameFile;
+    deleteFile: operation_deleteFile;
+    uploadFile: operation_uploadFile;
+  },
+  OperationType
+>;
 
-interface Operations {
-  [key: string]: Operation;
-  listFiles: {
-    parameters: EmptyObject;
-    result: {
-      data: {
-        /**
-         * List of filenames
-         */
-        files: string[];
-        /**
-         * Base URL used when linking to files
-         */
-        baseUrl: string;
-      };
-    };
-  };
-  renameFile: {
-    parameters: {
-      oldName: string;
-      newName: string;
-    };
-    result: {
-      data: {
-        /**
-         * New name of the file. If the renaming failed, the original file name
-         * is returned.
-         */
-        newName: string;
-      };
-    };
-  };
-  deleteFile: {
-    parameters: {
-      filename: string;
-    };
-    result: {
-      data: {
-        success: boolean;
-      };
-    };
-  };
-  uploadFile: {
-    parameters: {
-      files: FileList;
-    };
-    result: {
-      data: {
-        /**
-         * List of files that were successfully uploaded.
-         */
-        uploadedFiles: string[];
-        /**
-         * List of files that couldn't be uploaded.
-         */
-        filesWithErrors: string[];
-      };
-    };
-  };
-}
-
-async function apiRequest<T extends keyof OmitIndexSignature<Operations>>(
+async function apiRequest<T extends keyof Operations>(
   operation: T,
   parameters: Operations[T]["parameters"],
 ): Promise<Operations[T]["result"]> {
@@ -99,7 +38,7 @@ async function apiRequest<T extends keyof OmitIndexSignature<Operations>>(
 
     body.append("operationType", operation);
 
-    for (const file of (parameters as Operations["uploadFile"]["parameters"])
+    for (const file of (parameters as operation_uploadFile["parameters"])
       .files) {
       body.append("files[]", file);
     }

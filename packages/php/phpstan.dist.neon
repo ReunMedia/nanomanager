@@ -8,45 +8,62 @@ parameters:
     - */tests/*
   typeAliases:
     UploadedFiles: 'array{"name": string[], "full_path": string[], "type": string[], "tmp_name": string[], "error": int[], "size": int[]}'
+
+    #
+    # Backend types for API requests and responses
+    #
+    # Types in this file must match ones in `packages/frontend/src/types/api.d.ts`
+    #
+
     OperationType: '"deleteFile"|"listFiles"|"renameFile"|"uploadFile"'
-    operation_listFiles_result: '''
+
+    operation_listFiles: '''
       array{
-        "data": array{
-          "files": string[],
-          "baseUrl": string
+        "parameters": array{},
+        "result": array{
+          "data": array{
+            "files": string[],
+            "baseUrl": string
+          }
         }
       }
     '''
-    operation_renameFile_parameters: '''
+
+    operation_renameFile: '''
       array{
-        "oldName": string,
-        "newName": string,
-      }
-    '''
-    operation_renameFile_result: '''
-      array{
-        "data": array{
+        "parameters": array{
+          "oldName": string,
           "newName": string,
+        },
+        "result": array{
+          "data": array{
+            "newName": string,
+          }
         }
       }
     '''
-    operation_deleteFile_parameters: '''
+
+    operation_deleteFile: '''
       array{
-        "filename": string,
-      }
-    '''
-    operation_deleteFile_result: '''
-      array{
-        "data": array{
-          "success": boolean,
+        "parameters": array{
+          "filename": string,
+        },
+        "result": array{
+          "data": array{
+            "success": boolean,
+          }
         }
       }
     '''
-    operation_uploadFile_result: '''
+
+    operation_uploadFile: '''
       array{
-        "data": array{
-          "uploadedFiles": string[],
-          "filesWithErrors": string[],
+        "parameters": array{},
+        "result": array{
+          "data": array{
+            "uploadedFiles": string[],
+            "filesWithErrors": string[],
+          }
         }
       }
     '''

@@ -53,9 +53,11 @@ class Nanomanager
      *
      * Files are returned in naturally sorted case-insensitive order
      *
-     * @return operation_listFiles_result
+     * @param operation_listFiles["parameters"] $parameters
+     *
+     * @return operation_listFiles["result"]
      */
-    public function operation_listFiles(): array
+    public function operation_listFiles($parameters): array
     {
         $files = [];
         while ($filename = readdir($this->handle)) {
@@ -77,9 +79,9 @@ class Nanomanager
     /**
      * Rename a file.
      *
-     * @param operation_renameFile_parameters $parameters
+     * @param operation_renameFile["parameters"] $parameters
      *
-     * @return operation_renameFile_result
+     * @return operation_renameFile["result"]
      */
     public function operation_renameFile($parameters): array
     {
@@ -122,9 +124,9 @@ class Nanomanager
     /**
      * Delete a file.
      *
-     * @param operation_deleteFile_parameters $parameters
+     * @param operation_deleteFile["parameters"] $parameters
      *
-     * @return operation_deleteFile_result
+     * @return operation_deleteFile["result"]
      */
     public function operation_deleteFile($parameters): array
     {
@@ -142,9 +144,11 @@ class Nanomanager
     /**
      * Upload a file.
      *
-     * @return operation_uploadFile_result
+     * @param operation_uploadFile["parameters"] $parameters
+     *
+     * @return operation_uploadFile["result"]
      */
-    public function operation_uploadFile(): array
+    public function operation_uploadFile($parameters): array
     {
         $result = [
             'data' => [
@@ -272,8 +276,8 @@ class Nanomanager
     }
 
     /**
-     * @param OperationType|string                                                    $operationType
-     * @param mixed[]|operation_deleteFile_parameters|operation_renameFile_parameters $parameters
+     * @param OperationType|string $operationType
+     * @param mixed[]|operation_listFiles["parameters"]|operation_deleteFile["parameters"]|operation_renameFile["parameters"]|operation_uploadFile["parameters"] $parameters
      */
     public function runOperation(string $operationType, array $parameters): string
     {
@@ -284,7 +288,7 @@ class Nanomanager
 
         switch ($operationType) {
             case 'listFiles':
-                $operationResult = $this->operation_listFiles();
+                $operationResult = $this->operation_listFiles($parameters);
 
                 break;
 
@@ -305,7 +309,7 @@ class Nanomanager
                 break;
 
             case 'uploadFile':
-                $operationResult = $this->operation_uploadFile();
+                $operationResult = $this->operation_uploadFile($parameters);
 
                 break;
 

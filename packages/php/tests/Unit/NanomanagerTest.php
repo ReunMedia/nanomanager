@@ -133,7 +133,7 @@ describe(Nanomanager::class.'::isValidFilename()', function () {
 describe("'listFiles' operation", function () {
     it('should return files in naturally sorted case-insensitive order', function () {
         $nanomanager = createNanomanager();
-        $result = $nanomanager->operation_listFiles();
+        $result = $nanomanager->operation_listFiles([]);
         $files = $result['data']['files'];
         expect($files)->toHaveCount(5);
         expect($files)->toBe(['1a.txt', '2b.txt', '11c.txt', 'hello.txt', 'Second-file.txt']);
@@ -141,7 +141,7 @@ describe("'listFiles' operation", function () {
 
     it('should not return dotfiles', function () {
         $nanomanager = createNanomanager();
-        $result = $nanomanager->operation_listFiles();
+        $result = $nanomanager->operation_listFiles([]);
         $files = $result['data']['files'];
         expect($files)->not()->toContain('.htaccess');
     });
@@ -306,7 +306,7 @@ describe("'uploadFile' operation", function () {
         ];
 
         /** @disregard P1013 */
-        $result = $nanomanager->operation_uploadFile();
+        $result = $nanomanager->operation_uploadFile([]);
 
         expect($result['data']['uploadedFiles'][0])->toBe('uploaded-file.txt');
     });
@@ -352,7 +352,7 @@ describe("'uploadFile' operation", function () {
         ];
 
         /** @disregard P1013 */
-        $result = $nanomanager->operation_uploadFile();
+        $result = $nanomanager->operation_uploadFile([]);
 
         expect($result['data']['uploadedFiles'])->toHaveCount(0);
         expect($result['data']['filesWithErrors'])->toHaveCount(3);
