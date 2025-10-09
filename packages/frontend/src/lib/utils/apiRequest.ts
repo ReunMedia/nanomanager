@@ -1,5 +1,15 @@
 import type { EmptyObject, OmitIndexSignature } from "type-fest";
 
+/**
+ * URL is set by Nanomanager backend in production
+ */
+// DEVELOPER NOTE - To improve performance, this placeholder is only ever
+// replaced once by PHP. This means that the "%NANOMANAGER_API_URL%" placeholder
+// must NEVER be used anywhere else in the frontend.
+const apiUrl = import.meta.env.DEV
+  ? "http://localhost:8080"
+  : "%NANOMANAGER_API_URL%";
+
 interface Operation {
   /**
    * Input parameters of the operation
@@ -76,8 +86,6 @@ interface Operations {
     };
   };
 }
-
-const apiUrl = "http://localhost:8080";
 
 async function apiRequest<T extends keyof OmitIndexSignature<Operations>>(
   operation: T,

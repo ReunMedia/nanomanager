@@ -17,13 +17,24 @@ class Nanomanager
      * @throws \RuntimeException if directory couldn't be opened
      */
     public function __construct(
+        /**
+         * Directory managed by Nanomanager.
+         *
+         * E.g. "public/uploads"
+         */
         string $directory,
         /**
          * Base URL used when linking to files.
          *
-         * @var string
+         * E.g. "https://example.com/uploads"
          */
         private string $baseUrl,
+        /**
+         * URL used to access Nanomanager API from frontend.
+         *
+         * E.g. "https://example.com/admin/nanomanager"
+         */
+        private string $apiUrl,
     ) {
         $realDir = realpath($directory);
         $handle = false;
@@ -204,12 +215,13 @@ class Nanomanager
             echo $this->runOperation($operationType, $parameters);
         } elseif ('GET' === $_SERVER['REQUEST_METHOD']) {
             $frontendFile = 'phar://nanomanager.phar/frontend/dist/index.html';
-            if (file_exists($frontendFile)) {
-                // @phpstan-ignore require.fileNotFound
-                require $frontendFile;
-            } else {
+            $frontendData = file_get_contents($frontendFile);
+            if (false === $frontendData) {
                 throw new \Exception("Unable to open frontend file inside PHAR. This means that you're probably running Nanomanager in dev mode and need to open frontend separately by running `bun moon run frontend:dev`.");
             }
+            $frontendData = $this->replaceFrontendPlaceholders($frontendData);
+
+            echo $frontendData;
         }
 
         if ($returnOutput) {
@@ -308,6 +320,22 @@ class Nanomanager
         }
 
         return (string) json_encode($operationResult);
+    }
+
+    public function replaceFrontendPlaceholders(string $frontendData): string
+    {
+        // Replace API URL template placeholder in `src/lib/apiRequest.ts`
+        //
+        // Since this placeholder is used only once we use custom
+        // replacement logig instead of traditional `str_replace()` or
+        // regex. See `src/lib/apiRequest.ts` in frontend for more.
+        $placeholder = '%NANOMANAGER_API_URL%';
+        $pos = strpos($frontendData, $placeholder);
+        if (false === $pos) {
+            throw new \Exception("Placeholder {$placeholder} not found in frontend code. This is a serious issue and should be fixed!");
+        }
+
+        return substr_replace($frontendData, $this->apiUrl, $pos, strlen($placeholder));
     }
 
     /**

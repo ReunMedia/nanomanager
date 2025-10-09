@@ -7,17 +7,42 @@ use Tests\TestCase;
 
 function createNanomanager(): Nanomanager
 {
-    return new Nanomanager(TestCase::$uploadsDirectory, '');
+    return new Nanomanager(
+        TestCase::$uploadsDirectory,
+        'https://example.com/uploads',
+        'https://example.com/nanomanager'
+    );
 }
 
-function createNanomanagerMock() {}
+function createNanomanagerMockOrSpy($spy = false)
+{
+    $args = [
+        TestCase::$uploadsDirectory,
+        'https://example.com/uploads',
+        'https://example.com/nanomanager',
+    ];
+
+    return ($spy)
+        ? Mockery::spy(Nanomanager::class, $args)
+        : Mockery::mock(Nanomanager::class, $args);
+}
+
+function createNanomanagerMock()
+{
+    return createNanomanagerMockOrSpy();
+}
+
+function createNanomanagerSpy()
+{
+    return createNanomanagerMockOrSpy(true);
+}
 
 describe(Nanomanager::class, function () {
     it('should allow uploading files', function () {})->todo();
 });
 
 test(Nanomanager::class.'::runOperation()', function () {
-    $nanomanagerSpy = Mockery::mock(Nanomanager::class, [TestCase::$uploadsDirectory, ''])->makePartial();
+    $nanomanagerSpy = createNanomanagerMock()->makePartial();
 
     $operations = [];
 
@@ -144,7 +169,7 @@ describe("'renameFile' operation", function () {
         expect($result['data']['newName'])->toBe('not-found.txt');
     });
     it('should validate new and old filename before renaming', function () {
-        $nanomanagerSpy = Mockery::spy(Nanomanager::class, [TestCase::$uploadsDirectory, ''])->makePartial();
+        $nanomanagerSpy = createNanomanagerSpy()->makePartial();
 
         /** @disregard P1013 */
         $nanomanagerSpy->operation_renameFile(['oldName' => 'hello.txt', 'newName' => 'Second-file.txt']);
@@ -203,7 +228,7 @@ describe("'deleteFile' operation", function () {
     });
 
     it('should validate filename before deleting', function () {
-        $nanomanagerSpy = Mockery::spy(Nanomanager::class, [TestCase::$uploadsDirectory, ''])->makePartial();
+        $nanomanagerSpy = createNanomanagerSpy()->makePartial();
 
         /** @disregard P1013 */
         $nanomanagerSpy->operation_deleteFile(['filename' => 'delete-me.txt']);
@@ -240,7 +265,7 @@ describe("'uploadFile' operation", function () {
         $fileToUpload = TestCase::$uploadsDirectory.'/tmp-upload-me.txt';
 
         // Create mock so we can test the code without actually uploading a file
-        $nanomanager = Mockery::mock(Nanomanager::class, [TestCase::$uploadsDirectory, ''])
+        $nanomanager = createNanomanagerMock()
             // Allow mocking `move_uploaded_files()`
             ->shouldAllowMockingProtectedMethods()
             ->makePartial()
@@ -287,7 +312,7 @@ describe("'uploadFile' operation", function () {
     });
 
     it('should not allow invalid filenames', function () {
-        $nanomanager = Mockery::spy(Nanomanager::class, [TestCase::$uploadsDirectory, ''])
+        $nanomanager = createNanomanagerSpy()
             ->makePartial()
         ;
 
@@ -336,4 +361,20 @@ describe("'uploadFile' operation", function () {
         // invalid.
         $nanomanager->shouldNotHaveReceived('move_uploaded_file');
     });
+});
+
+test(Nanomanager::class.'::replaceFrontendPlaceholders', function () {
+    $nanomanager = createNanomanager();
+
+    // Snippet from frontend where the placeholder is actually used
+    $frontendData = <<<'JS'
+        const apiUrl = import.meta.env.DEV
+        ? "http://localhost:8080"
+        : "%NANOMANAGER_API_URL%";
+    JS;
+
+    $replaced = $nanomanager->replaceFrontendPlaceholders($frontendData);
+
+    expect($replaced)->not->toContain('"%NANOMANAGER_API_URL%"');
+    expect($replaced)->toContain('"https://example.com/nanomanager"');
 });

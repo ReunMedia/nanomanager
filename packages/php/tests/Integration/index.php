@@ -27,4 +27,6 @@ $proto = ($_SERVER['HTTPS'] ?? false) ? 'https' : 'http';
 $host = is_string($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 $baseUrl = "{$proto}://{$host}/{$uploadsDir}";
 
-(new Nanomanager($dir, $baseUrl))->run();
+$apiUrl = "{$proto}://{$host}";
+
+(new Nanomanager($dir, $baseUrl, $apiUrl))->run();
