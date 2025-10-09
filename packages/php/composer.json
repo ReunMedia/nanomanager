@@ -43,7 +43,7 @@
         "preview": [
             "Composer\\Config::disableProcessTimeout",
             "@putenv NANOMANAGER_PREVIEW=true",
-            "php -d variables_order=EGPCS -S 0.0.0.0:8080 -t tests/Integration"
+            "php -d variables_order=EGPCS -S 0.0.0.0:8081 -t tests/Integration"
         ],
         "trap": [
             "Composer\\Config::disableProcessTimeout",
