@@ -56,16 +56,22 @@ body {
   line-height: 1.5;
   /* Use fixed font size on body so that we can use `em` units for all sizes */
   font-size: 16px;
-  padding: 0 1em;
 }
 
-main {
-  max-width: 960px;
-  margin: 0 auto;
+#app {
+  min-height: 100vh;
+  padding: 0 1em;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+
+  & > * {
+    flex: 1;
+  }
 }
 
 h1 {
-  margin: 1em 0;
+  margin: 0 0 1em 0;
 }
 
 input,

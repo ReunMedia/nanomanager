@@ -8,5 +8,7 @@
   "alias": "nanomanager.phar",
   "shebang": false,
   "dump-autoload": false,
-  "compactors": ["Tools\\MinifierCompactor"]
+  "compactors": ["Tools\\MinifierCompactor"],
+  "git-version": "git_version",
+  "git-commit": "git_commit"
 }

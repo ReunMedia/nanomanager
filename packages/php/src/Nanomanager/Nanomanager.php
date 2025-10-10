@@ -7,6 +7,16 @@ namespace Nanomanager;
 class Nanomanager
 {
     /**
+     * Nanomanager version.
+     */
+    public const string VERSION = '@git_version@';
+
+    /**
+     * Full SHA of the commit this version was built from.
+     */
+    public const string COMMIT_SHA = '@git_commit@';
+
+    /**
      * @var resource
      */
     private $handle;
@@ -328,18 +338,17 @@ class Nanomanager
 
     public function replaceFrontendPlaceholders(string $frontendData): string
     {
-        // Replace API URL template placeholder in `src/lib/apiRequest.ts`
-        //
-        // Since this placeholder is used only once we use custom
-        // replacement logig instead of traditional `str_replace()` or
-        // regex. See `src/lib/apiRequest.ts` in frontend for more.
-        $placeholder = '%NANOMANAGER_API_URL%';
-        $pos = strpos($frontendData, $placeholder);
-        if (false === $pos) {
-            throw new \Exception("Placeholder {$placeholder} not found in frontend code. This is a serious issue and should be fixed!");
-        }
+        $placeholders = [
+            '%NANOMANAGER_API_URL%',
+            '%NANOMANAGER_VERSION%',
+        ];
 
-        return substr_replace($frontendData, $this->apiUrl, $pos, strlen($placeholder));
+        $replacements = [
+            $this->apiUrl,
+            static::VERSION,
+        ];
+
+        return str_replace($placeholders, $replacements, $frontendData);
     }
 
     /**

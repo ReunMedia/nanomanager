@@ -9,9 +9,6 @@ import type {
 /**
  * URL is set by Nanomanager backend in production
  */
-// DEVELOPER NOTE - To improve performance, this placeholder is only ever
-// replaced once by PHP. This means that the "%NANOMANAGER_API_URL%" placeholder
-// must NEVER be used anywhere else in the frontend.
 const apiUrl = import.meta.env.DEV
   ? "http://localhost:8080"
   : "%NANOMANAGER_API_URL%";
