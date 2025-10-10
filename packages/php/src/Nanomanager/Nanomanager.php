@@ -205,12 +205,9 @@ class Nanomanager
         return $result;
     }
 
-    public function run(bool $returnOutput = false): string
+    public function run(): string
     {
         $output = '';
-        if ($returnOutput) {
-            ob_start();
-        }
 
         if ('POST' === $_SERVER['REQUEST_METHOD']) {
             $body = file_get_contents('php://input');
@@ -234,7 +231,7 @@ class Nanomanager
                 }
             }
 
-            echo $this->runOperation($operationType, $parameters);
+            $output = $this->runOperation($operationType, $parameters);
         } elseif ('GET' === $_SERVER['REQUEST_METHOD']) {
             $frontendFile = 'phar://nanomanager.phar/frontend/dist/index.html';
             $frontendData = file_get_contents($frontendFile);
@@ -243,14 +240,10 @@ class Nanomanager
             }
             $frontendData = $this->replaceFrontendPlaceholders($frontendData);
 
-            echo $frontendData;
+            $output = $frontendData;
         }
 
-        if ($returnOutput) {
-            $output = ob_get_clean();
-        }
-
-        return (is_string($output)) ? $output : '';
+        return $output;
     }
 
     /**

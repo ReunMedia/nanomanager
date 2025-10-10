@@ -29,4 +29,4 @@ $baseUrl = "{$proto}://{$host}/{$uploadsDir}";
 
 $apiUrl = "{$proto}://{$host}";
 
-(new Nanomanager($dir, $baseUrl, $apiUrl))->run();
+echo (new Nanomanager($dir, $baseUrl, $apiUrl))->run();
