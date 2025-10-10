@@ -8,13 +8,21 @@ class Nanomanager
 {
     /**
      * Nanomanager version.
+     *
+     * @var string
      */
-    public const string VERSION = '@git_version@';
+    // DEVELOPER NOTE - Using `@var string` instead of PHP type drops PHP
+    // requirement from `8.3` to `8.2`
+    public const VERSION = '@git_version@';
 
     /**
      * Full SHA of the commit this version was built from.
+     *
+     * @var string
      */
-    public const string COMMIT_SHA = '@git_commit@';
+    // DEVELOPER NOTE - Using `@var string` instead of PHP type drops PHP
+    // requirement from `8.3` to `8.2`
+    public const COMMIT_SHA = '@git_commit@';
 
     /**
      * @var resource

@@ -1,0 +1,4 @@
+services:
+  php-compat-test:
+    build:
+      dockerfile: docker/Dockerfile.php-compat-test

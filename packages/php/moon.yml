@@ -20,3 +20,16 @@ tasks:
 
   trap:
     command: composer trap
+
+  # This task runs tests on a specific PHP version using Docker
+  test-php-compatibility:
+    command:
+      - "docker"
+      - "compose"
+      - "up"
+      - "--build"
+    inputs:
+      - "@group(phpSources)"
+      - "@group(phpTests)"
+      - "docker-compose.yaml"
+      - "docker/*"

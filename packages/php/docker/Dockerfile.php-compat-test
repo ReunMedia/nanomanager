@@ -1,0 +1,24 @@
+#
+# This Dockerfile runs tests on a specific PHP version to test compatibility.
+# It uses a custom `composer.json` with only testing dependencies.
+#
+
+ARG PHP_VERSION=8.2
+FROM php:${PHP_VERSION}-alpine
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+WORKDIR /app
+
+COPY docker/composer.json /app/
+
+COPY phpunit.xml /app/
+RUN composer install
+
+COPY src /app/src
+COPY tests /app/tests
+COPY tools /app/tools
+
+CMD ["vendor/bin/pest"]
