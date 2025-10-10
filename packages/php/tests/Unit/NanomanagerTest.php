@@ -41,49 +41,6 @@ describe(Nanomanager::class, function () {
     it('should allow uploading files', function () {})->todo();
 });
 
-test(Nanomanager::class.'::runOperation()', function () {
-    $nanomanagerSpy = createNanomanagerMock()->makePartial();
-
-    $operations = [];
-
-    $operations[] = [
-        'expects' => 'operation_listFiles',
-        'operationType' => 'listFiles',
-        'parameters' => [],
-    ];
-
-    $operations[] = [
-        'expects' => 'operation_renameFile',
-        'operationType' => 'renameFile',
-        'parameters' => [
-            'oldName' => 'old.txt',
-            'newName' => 'new.txt',
-        ],
-    ];
-
-    $operations[] = [
-        'expects' => 'operation_deleteFile',
-        'operationType' => 'deleteFile',
-        'parameters' => [
-            'filename' => 'delete.txt',
-        ],
-    ];
-
-    $operations[] = [
-        'expects' => 'operation_uploadFile',
-        'operationType' => 'uploadFile',
-        'parameters' => [],
-    ];
-
-    foreach ($operations as $operation) {
-        /** @disregard P1013 */
-        $nanomanagerSpy->expects($operation['expects']);
-
-        /** @disregard P1013 */
-        $nanomanagerSpy->runOperation($operation['operationType'], $operation['parameters']);
-    }
-});
-
 describe(Nanomanager::class.'::isValidFilename()', function () {
     it('should not allow directory traversal', function () {
         $nanomanager = createNanomanager();
@@ -133,7 +90,14 @@ describe(Nanomanager::class.'::isValidFilename()', function () {
 describe("'listFiles' operation", function () {
     it('should return files in naturally sorted case-insensitive order', function () {
         $nanomanager = createNanomanager();
-        $result = $nanomanager->operation_listFiles([]);
+
+        $body = json_encode([
+            'operationType' => 'listFiles',
+            'parameters' => [],
+        ]);
+
+        $result = json_decode($nanomanager->run('POST', $body), true);
+
         $files = $result['data']['files'];
         expect($files)->toHaveCount(5);
         expect($files)->toBe(['1a.txt', '2b.txt', '11c.txt', 'hello.txt', 'Second-file.txt']);
@@ -141,7 +105,13 @@ describe("'listFiles' operation", function () {
 
     it('should not return dotfiles', function () {
         $nanomanager = createNanomanager();
-        $result = $nanomanager->operation_listFiles([]);
+
+        $body = json_encode([
+            'operationType' => 'listFiles',
+            'parameters' => [],
+        ]);
+        $result = json_decode($nanomanager->run('POST', $body), true);
+
         $files = $result['data']['files'];
         expect($files)->not()->toContain('.htaccess');
     });
@@ -150,52 +120,89 @@ describe("'listFiles' operation", function () {
 describe("'renameFile' operation", function () {
     it('should rename file', function () {
         $nanomanager = createNanomanager();
-        $result = $nanomanager->operation_renameFile(['oldName' => 'hello.txt', 'newName' => 'renamed.txt']);
-        expect($result['data']['newName'])->toBe('renamed.txt');
 
+        $body = json_encode([
+            'operationType' => 'renameFile',
+            'parameters' => ['oldName' => 'hello.txt', 'newName' => 'renamed.txt'],
+        ]);
+        $result = json_decode($nanomanager->run('POST', $body), true);
+
+        expect($result['data']['newName'])->toBe('renamed.txt');
         expect(file_exists(TestCase::$uploadsDirectory.'/hello.txt'))->toBeFalse();
         expect(file_exists(TestCase::$uploadsDirectory.'/renamed.txt'))->toBeTrue();
 
-        $result = $nanomanager->operation_renameFile(['oldName' => 'renamed.txt', 'newName' => 'hello.txt']);
-        expect($result['data']['newName'])->toBe('hello.txt');
+        $body = json_encode([
+            'operationType' => 'renameFile',
+            'parameters' => ['oldName' => 'renamed.txt', 'newName' => 'hello.txt'],
+        ]);
+        $result = json_decode($nanomanager->run('POST', $body), true);
 
+        expect($result['data']['newName'])->toBe('hello.txt');
         expect(file_exists(TestCase::$uploadsDirectory.'/renamed.txt'))->toBeFalse();
         expect(file_exists(TestCase::$uploadsDirectory.'/hello.txt'))->toBeTrue();
     });
     it("should fail if the original file doesn't exist", function () {
         $nanomanager = createNanomanager();
-        $result = $nanomanager->operation_renameFile(['oldName' => 'not-found.txt', 'newName' => 'renamed.txt']);
+
+        $body = json_encode([
+            'operationType' => 'renameFile',
+            'parameters' => ['oldName' => 'not-found.txt', 'newName' => 'renamed.txt'],
+        ]);
+        $result = json_decode($nanomanager->run('POST', $body), true);
+
         expect($result['data']['newName'])->not()->toBe('renamed.txt');
         expect($result['data']['newName'])->toBe('not-found.txt');
     });
     it('should validate new and old filename before renaming', function () {
-        $nanomanagerSpy = createNanomanagerSpy()->makePartial();
+        $nanomanager = createNanomanagerSpy()->makePartial();
+
+        $body = json_encode([
+            'operationType' => 'renameFile',
+            'parameters' => ['oldName' => 'hello.txt', 'newName' => 'Second-file.txt'],
+        ]);
 
         /** @disregard P1013 */
-        $nanomanagerSpy->operation_renameFile(['oldName' => 'hello.txt', 'newName' => 'Second-file.txt']);
+        $nanomanager->run('POST', $body);
 
         /** @disregard P1013 */
-        $nanomanagerSpy->shouldHaveReceived('isValidFilename')
+        $nanomanager->shouldHaveReceived('isValidFilename')
             ->with('hello.txt')
         ;
 
         /** @disregard P1013 */
-        $nanomanagerSpy->shouldHaveReceived('isValidFilename')
+        $nanomanager->shouldHaveReceived('isValidFilename')
             ->with('Second-file.txt')
         ;
     });
     it('should silently fail if both old and new name are identical', function () {
         $nanomanager = createNanomanager();
-        $result = $nanomanager->operation_renameFile(['oldName' => 'hello.txt', 'newName' => 'hello.txt']);
+
+        $body = json_encode([
+            'operationType' => 'renameFile',
+            'parameters' => ['oldName' => 'hello.txt', 'newName' => 'hello.txt'],
+        ]);
+        $result = json_decode($nanomanager->run('POST', $body), true);
+
         expect($result['data']['newName'])->toBe('hello.txt');
     });
     it('should not allow renaming to a name that already exists', function () {
         $nanomanager = createNanomanager();
-        $result = $nanomanager->operation_renameFile(['oldName' => 'hello.txt', 'newName' => 'Second-file.txt']);
+
+        $body = json_encode([
+            'operationType' => 'renameFile',
+            'parameters' => ['oldName' => 'hello.txt', 'newName' => 'Second-file.txt'],
+        ]);
+        $result = json_decode($nanomanager->run('POST', $body), true);
+
         expect($result['data']['newName'])->toBe('hello.txt');
 
         // Prevent renaming to directory
-        $result = $nanomanager->operation_renameFile(['oldName' => 'hello.txt', 'newName' => 'subdir']);
+        $body = json_encode([
+            'operationType' => 'renameFile',
+            'parameters' => ['oldName' => 'hello.txt', 'newName' => 'subdir'],
+        ]);
+        $result = json_decode($nanomanager->run('POST', $body), true);
+
         expect($result['data']['newName'])->toBe('hello.txt');
     });
     it('should output client-side handleable errors when an operation fails', function () {})->todo();
@@ -215,7 +222,13 @@ describe("'deleteFile' operation", function () {
         $nanomanager = createNanomanager();
 
         expect(file_exists($fileToDelete))->toBeTrue();
-        $result = $nanomanager->operation_deleteFile(['filename' => 'delete-me.txt']);
+
+        $body = json_encode([
+            'operationType' => 'deleteFile',
+            'parameters' => ['filename' => 'delete-me.txt'],
+        ]);
+        $result = json_decode($nanomanager->run('POST', $body), true);
+
         expect($result['data']['success'])->toBeTrue();
         expect(file_exists($fileToDelete))->toBeFalse();
     })->after(function () {
@@ -228,13 +241,18 @@ describe("'deleteFile' operation", function () {
     });
 
     it('should validate filename before deleting', function () {
-        $nanomanagerSpy = createNanomanagerSpy()->makePartial();
+        $nanomanager = createNanomanagerSpy()->makePartial();
+
+        $body = json_encode([
+            'operationType' => 'deleteFile',
+            'parameters' => ['filename' => 'delete-me.txt'],
+        ]);
 
         /** @disregard P1013 */
-        $nanomanagerSpy->operation_deleteFile(['filename' => 'delete-me.txt']);
+        $result = json_decode($nanomanager->run('POST', $body), true);
 
         /** @disregard P1013 */
-        $nanomanagerSpy->shouldHaveReceived('isValidFilename')
+        $nanomanager->shouldHaveReceived('isValidFilename')
             ->with('delete-me.txt')
         ;
     });
@@ -242,18 +260,33 @@ describe("'deleteFile' operation", function () {
     it('should make sure file exists before deleting', function () {
         $nanomanager = createNanomanager();
 
-        $result = $nanomanager->operation_deleteFile(['filename' => 'not-found.txt']);
+        $body = json_encode([
+            'operationType' => 'deleteFile',
+            'parameters' => ['filename' => 'not-found.txt'],
+        ]);
+        $result = json_decode($nanomanager->run('POST', $body), true);
+
         expect($result['data']['success'])->toBeFalse();
     });
 
     it('should not allow deleting files or directories not managed by Nanomanager', function () {
         $nanomanager = createNanomanager();
 
-        $result = $nanomanager->operation_deleteFile(['filename' => 'subdir']);
+        $body = json_encode([
+            'operationType' => 'deleteFile',
+            'parameters' => ['filename' => 'subdir'],
+        ]);
+        $result = json_decode($nanomanager->run('POST', $body), true);
+
         expect($result['data']['success'])->toBeFalse();
         expect(file_exists(TestCase::$uploadsDirectory.'/subdir'))->toBeTrue();
 
-        $result = $nanomanager->operation_deleteFile(['filename' => '.htaccess']);
+        $body = json_encode([
+            'operationType' => 'deleteFile',
+            'parameters' => ['filename' => '.htaccess'],
+        ]);
+        $result = json_decode($nanomanager->run('POST', $body), true);
+
         expect($result['data']['success'])->toBeFalse();
         expect(file_exists(TestCase::$uploadsDirectory.'/.htaccess'))->toBeTrue();
     });
@@ -305,8 +338,13 @@ describe("'uploadFile' operation", function () {
             ],
         ];
 
+        $body = json_encode([
+            'operationType' => 'uploadFile',
+            'parameters' => [],
+        ]);
+
         /** @disregard P1013 */
-        $result = $nanomanager->operation_uploadFile([]);
+        $result = json_decode($nanomanager->run('POST', $body), true);
 
         expect($result['data']['uploadedFiles'][0])->toBe('uploaded-file.txt');
     });
@@ -351,8 +389,13 @@ describe("'uploadFile' operation", function () {
             ],
         ];
 
+        $body = json_encode([
+            'operationType' => 'uploadFile',
+            'parameters' => [],
+        ]);
+
         /** @disregard P1013 */
-        $result = $nanomanager->operation_uploadFile([]);
+        $result = json_decode($nanomanager->run('POST', $body), true);
 
         expect($result['data']['uploadedFiles'])->toHaveCount(0);
         expect($result['data']['filesWithErrors'])->toHaveCount(3);

@@ -27,9 +27,9 @@ class Nanomanager
     /**
      * @var resource
      */
-    private $handle;
+    protected $handle;
 
-    private string $directory;
+    protected string $directory;
 
     /**
      * @throws \RuntimeException if directory couldn't be opened
@@ -46,13 +46,13 @@ class Nanomanager
          *
          * E.g. "https://example.com/uploads"
          */
-        private string $baseUrl,
+        protected string $baseUrl,
         /**
          * URL used to access Nanomanager API from frontend.
          *
          * E.g. "https://example.com/admin/nanomanager"
          */
-        private string $apiUrl,
+        protected string $apiUrl,
     ) {
         $realDir = realpath($directory);
         $handle = false;
@@ -67,159 +67,21 @@ class Nanomanager
     }
 
     /**
-     * Get a list of all filenames in managed directory.
-     *
-     * Files are returned in naturally sorted case-insensitive order
-     *
-     * @param operation_listFiles["parameters"] $parameters
-     *
-     * @return operation_listFiles["result"]
+     * @param "GET"|"POST" $requestMethod
      */
-    public function operation_listFiles($parameters): array
-    {
-        $files = [];
-        while ($filename = readdir($this->handle)) {
-            // Don't return `.`, `..`, dotfiles or directories
-            if (str_starts_with($filename, '.')
-                || is_dir("{$this->directory}/{$filename}")
-            ) {
-                continue;
-            }
-            $files[] = $filename;
-        }
-
-        // Sort files in natural case-insensitive order
-        sort($files, SORT_NATURAL | SORT_FLAG_CASE);
-
-        return ['data' => ['files' => $files, 'baseUrl' => $this->baseUrl]];
-    }
-
-    /**
-     * Rename a file.
-     *
-     * @param operation_renameFile["parameters"] $parameters
-     *
-     * @return operation_renameFile["result"]
-     */
-    public function operation_renameFile($parameters): array
-    {
-        $oldName = $parameters['oldName'];
-        $newName = $parameters['newName'];
-
-        $oldNameFull = realpath("{$this->directory}/{$oldName}");
-        $newNameFull = "{$this->directory}/{$newName}";
-
-        $result = [
-            'data' => [
-                'newName' => $oldName,
-            ],
-        ];
-
-        // Make sure the old file exists
-        if (false === $oldNameFull) {
-            return $result;
-        }
-
-        // Validate old and new filenames
-        if (!$this->isValidFilename($oldName) || !$this->isValidFilename($newName)) {
-            return $result;
-        }
-
-        // Make sure the new file doesn't exist
-        // We're using `file_exists` instead of `is_file` to also consider
-        // directories
-        if (file_exists($newNameFull)) {
-            return $result;
-        }
-
-        if (rename($oldNameFull, $newNameFull)) {
-            $result['data']['newName'] = $newName;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Delete a file.
-     *
-     * @param operation_deleteFile["parameters"] $parameters
-     *
-     * @return operation_deleteFile["result"]
-     */
-    public function operation_deleteFile($parameters): array
-    {
-        $success = false;
-        $filename = $parameters['filename'];
-        $fullName = realpath("{$this->directory}/{$filename}");
-
-        if ($this->isValidFilename($filename) && is_string($fullName) && !is_dir($fullName)) {
-            $success = unlink($fullName);
-        }
-
-        return ['data' => ['success' => $success]];
-    }
-
-    /**
-     * Upload a file.
-     *
-     * @param operation_uploadFile["parameters"] $parameters
-     *
-     * @return operation_uploadFile["result"]
-     */
-    public function operation_uploadFile($parameters): array
-    {
-        $result = [
-            'data' => [
-                'uploadedFiles' => [],
-                'filesWithErrors' => [],
-            ],
-        ];
-
-        // Return if there are no files uploaded
-        if ([] === $_FILES) {
-            return $result;
-        }
-
-        /**
-         * @var UploadedFiles
-         */
-        $files = $_FILES['files'] ?? [];
-
-        foreach ($files['error'] as $i => $error) {
-            $name = $files['name'][$i];
-            $tmp_name = $files['tmp_name'][$i];
-            $success = false;
-
-            // Validate filename and make sure there was no upload error
-            if ($this->isValidFilename($name) && UPLOAD_ERR_OK === $error) {
-                $success = $this->move_uploaded_file($tmp_name, "{$this->directory}/{$name}");
-            }
-
-            if ($success) {
-                $result['data']['uploadedFiles'][] = $name;
-            } else {
-                $result['data']['filesWithErrors'][] = $name;
-            }
-        }
-
-        return $result;
-    }
-
-    public function run(): string
+    public function run(string $requestMethod, string $requestBody): string
     {
         $output = '';
 
-        if ('POST' === $_SERVER['REQUEST_METHOD']) {
-            $body = file_get_contents('php://input');
-
+        if ('POST' === $requestMethod) {
             // FormData (for file uploads)
-            if ('' === $body) {
+            if ('' === $requestBody) {
                 $operationType = is_string($_POST['operationType']) ? $_POST['operationType'] : '';
                 $parameters = $_POST;
             }
             // JSON body
             else {
-                $operation = json_decode((string) $body, true);
+                $operation = json_decode($requestBody, true);
                 if (!is_array($operation)) {
                     // TODO - Better error handling
                     throw new \Exception('Invalid operation');
@@ -232,7 +94,7 @@ class Nanomanager
             }
 
             $output = $this->runOperation($operationType, $parameters);
-        } elseif ('GET' === $_SERVER['REQUEST_METHOD']) {
+        } elseif ('GET' === $requestMethod) {
             $frontendFile = 'phar://nanomanager.phar/frontend/dist/index.html';
             $frontendData = file_get_contents($frontendFile);
             if (false === $frontendData) {
@@ -286,11 +148,26 @@ class Nanomanager
         return true;
     }
 
+    public function replaceFrontendPlaceholders(string $frontendData): string
+    {
+        $placeholders = [
+            '%NANOMANAGER_API_URL%',
+            '%NANOMANAGER_VERSION%',
+        ];
+
+        $replacements = [
+            $this->apiUrl,
+            static::VERSION,
+        ];
+
+        return str_replace($placeholders, $replacements, $frontendData);
+    }
+
     /**
      * @param OperationType|string $operationType
      * @param mixed[]|operation_listFiles["parameters"]|operation_deleteFile["parameters"]|operation_renameFile["parameters"]|operation_uploadFile["parameters"] $parameters
      */
-    public function runOperation(string $operationType, array $parameters): string
+    protected function runOperation(string $operationType, array $parameters): string
     {
         // All operation responses are returned as JSON
         header('Content-Type: application/json; charset=utf-8');
@@ -337,21 +214,6 @@ class Nanomanager
         return (string) json_encode($operationResult);
     }
 
-    public function replaceFrontendPlaceholders(string $frontendData): string
-    {
-        $placeholders = [
-            '%NANOMANAGER_API_URL%',
-            '%NANOMANAGER_VERSION%',
-        ];
-
-        $replacements = [
-            $this->apiUrl,
-            static::VERSION,
-        ];
-
-        return str_replace($placeholders, $replacements, $frontendData);
-    }
-
     /**
      * Mockable wrapper of `move_uploaded_file()` for testing purposes, since
      * `move_uploaded_file()` requires files to actually be uploaded with POST.
@@ -359,5 +221,144 @@ class Nanomanager
     protected function move_uploaded_file(string $from, string $to): bool
     {
         return move_uploaded_file($from, $to);
+    }
+
+    /**
+     * Get a list of all filenames in managed directory.
+     *
+     * Files are returned in naturally sorted case-insensitive order
+     *
+     * @param operation_listFiles["parameters"] $parameters
+     *
+     * @return operation_listFiles["result"]
+     */
+    protected function operation_listFiles($parameters): array
+    {
+        $files = [];
+        while ($filename = readdir($this->handle)) {
+            // Don't return `.`, `..`, dotfiles or directories
+            if (str_starts_with($filename, '.')
+                || is_dir("{$this->directory}/{$filename}")
+            ) {
+                continue;
+            }
+            $files[] = $filename;
+        }
+
+        // Sort files in natural case-insensitive order
+        sort($files, SORT_NATURAL | SORT_FLAG_CASE);
+
+        return ['data' => ['files' => $files, 'baseUrl' => $this->baseUrl]];
+    }
+
+    /**
+     * Rename a file.
+     *
+     * @param operation_renameFile["parameters"] $parameters
+     *
+     * @return operation_renameFile["result"]
+     */
+    protected function operation_renameFile($parameters): array
+    {
+        $oldName = $parameters['oldName'];
+        $newName = $parameters['newName'];
+
+        $oldNameFull = realpath("{$this->directory}/{$oldName}");
+        $newNameFull = "{$this->directory}/{$newName}";
+
+        $result = [
+            'data' => [
+                'newName' => $oldName,
+            ],
+        ];
+
+        // Make sure the old file exists
+        if (false === $oldNameFull) {
+            return $result;
+        }
+
+        // Validate old and new filenames
+        if (!$this->isValidFilename($oldName) || !$this->isValidFilename($newName)) {
+            return $result;
+        }
+
+        // Make sure the new file doesn't exist
+        // We're using `file_exists` instead of `is_file` to also consider
+        // directories
+        if (file_exists($newNameFull)) {
+            return $result;
+        }
+
+        if (rename($oldNameFull, $newNameFull)) {
+            $result['data']['newName'] = $newName;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Delete a file.
+     *
+     * @param operation_deleteFile["parameters"] $parameters
+     *
+     * @return operation_deleteFile["result"]
+     */
+    protected function operation_deleteFile($parameters): array
+    {
+        $success = false;
+        $filename = $parameters['filename'];
+        $fullName = realpath("{$this->directory}/{$filename}");
+
+        if ($this->isValidFilename($filename) && is_string($fullName) && !is_dir($fullName)) {
+            $success = unlink($fullName);
+        }
+
+        return ['data' => ['success' => $success]];
+    }
+
+    /**
+     * Upload a file.
+     *
+     * @param operation_uploadFile["parameters"] $parameters
+     *
+     * @return operation_uploadFile["result"]
+     */
+    protected function operation_uploadFile($parameters): array
+    {
+        $result = [
+            'data' => [
+                'uploadedFiles' => [],
+                'filesWithErrors' => [],
+            ],
+        ];
+
+        // Return if there are no files uploaded
+        if ([] === $_FILES) {
+            return $result;
+        }
+
+        /**
+         * @var UploadedFiles
+         */
+        $files = $_FILES['files'] ?? [];
+
+        foreach ($files['error'] as $i => $error) {
+            $name = $files['name'][$i];
+            $tmp_name = $files['tmp_name'][$i];
+            $success = false;
+
+            // Validate filename and make sure there was no upload error
+            if ($this->isValidFilename($name) && UPLOAD_ERR_OK === $error) {
+                $success = $this->move_uploaded_file($tmp_name, "{$this->directory}/{$name}");
+            }
+
+            if ($success) {
+                $result['data']['uploadedFiles'][] = $name;
+            } else {
+                $result['data']['filesWithErrors'][] = $name;
+            }
+        }
+
+        return $result;
     }
 }
