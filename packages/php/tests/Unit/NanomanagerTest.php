@@ -10,7 +10,8 @@ function createNanomanager(): Nanomanager
     return new Nanomanager(
         TestCase::$uploadsDirectory,
         'https://example.com/uploads',
-        'https://example.com/nanomanager'
+        'https://example.com/nanomanager',
+        __DIR__.'/../fixtures/frontend.html'
     );
 }
 
@@ -406,17 +407,9 @@ describe("'uploadFile' operation", function () {
     });
 });
 
-test(Nanomanager::class.'::replaceFrontendPlaceholders', function () {
+test('Frontend placeholder replacements', function () {
     $nanomanager = createNanomanager();
-
-    // Snippet from frontend where the placeholder is actually used
-    $frontendData = <<<'JS'
-        const apiUrl = import.meta.env.DEV
-        ? "http://localhost:8080"
-        : "%NANOMANAGER_API_URL%";
-    JS;
-
-    $replaced = $nanomanager->replaceFrontendPlaceholders($frontendData);
+    $replaced = $nanomanager->run('GET', '');
 
     expect($replaced)->not->toContain('"%NANOMANAGER_API_URL%"');
     expect($replaced)->toContain('"https://example.com/nanomanager"');

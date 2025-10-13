@@ -53,6 +53,11 @@ class Nanomanager
          * E.g. "https://example.com/admin/nanomanager"
          */
         protected string $apiUrl,
+
+        /**
+         * Custom frontend HTML file path.
+         */
+        protected string $frontendFilePath = 'phar://nanomanager.phar/frontend/dist/index.html',
     ) {
         $realDir = realpath($directory);
         $handle = false;
@@ -95,8 +100,7 @@ class Nanomanager
 
             $output = $this->runOperation($operationType, $parameters);
         } elseif ('GET' === $requestMethod) {
-            $frontendFile = 'phar://nanomanager.phar/frontend/dist/index.html';
-            $frontendData = file_get_contents($frontendFile);
+            $frontendData = file_get_contents($this->frontendFilePath);
             if (false === $frontendData) {
                 throw new \Exception("Unable to open frontend file inside PHAR. This means that you're probably running Nanomanager in dev mode and need to open frontend separately by running `bun moon run frontend:dev`.");
             }
@@ -146,21 +150,6 @@ class Nanomanager
         }
 
         return true;
-    }
-
-    public function replaceFrontendPlaceholders(string $frontendData): string
-    {
-        $placeholders = [
-            '%NANOMANAGER_API_URL%',
-            '%NANOMANAGER_VERSION%',
-        ];
-
-        $replacements = [
-            $this->apiUrl,
-            static::VERSION,
-        ];
-
-        return str_replace($placeholders, $replacements, $frontendData);
     }
 
     /**
@@ -214,14 +203,9 @@ class Nanomanager
         return (string) json_encode($operationResult);
     }
 
-    /**
-     * Mockable wrapper of `move_uploaded_file()` for testing purposes, since
-     * `move_uploaded_file()` requires files to actually be uploaded with POST.
-     */
-    protected function move_uploaded_file(string $from, string $to): bool
-    {
-        return move_uploaded_file($from, $to);
-    }
+    #
+    #region Operations
+    #
 
     /**
      * Get a list of all filenames in managed directory.
@@ -361,4 +345,36 @@ class Nanomanager
 
         return $result;
     }
+
+    #endregion
+
+    #
+    #region Utilities
+    #
+
+    protected function replaceFrontendPlaceholders(string $frontendData): string
+    {
+        $placeholders = [
+            '%NANOMANAGER_API_URL%',
+            '%NANOMANAGER_VERSION%',
+        ];
+
+        $replacements = [
+            $this->apiUrl,
+            static::VERSION,
+        ];
+
+        return str_replace($placeholders, $replacements, $frontendData);
+    }
+
+    /**
+     * Mockable wrapper of `move_uploaded_file()` for testing purposes, since
+     * `move_uploaded_file()` requires files to actually be uploaded with POST.
+     */
+    protected function move_uploaded_file(string $from, string $to): bool
+    {
+        return move_uploaded_file($from, $to);
+    }
+
+    #endregion
 }
