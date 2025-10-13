@@ -414,3 +414,17 @@ test('Frontend placeholder replacements', function () {
     expect($replaced)->not->toContain('"%NANOMANAGER_API_URL%"');
     expect($replaced)->toContain('"https://example.com/nanomanager"');
 });
+
+test("'createMissingDirectory' config option", function () {
+    $dir = __DIR__.'/../fixtures/temp-uploads';
+
+    expect(is_dir($dir))->toBeFalse();
+
+    new Nanomanager($dir, '', '', createMissingDirectory: true);
+
+    expect(is_dir($dir))->toBeTrue();
+
+    if (is_dir($dir)) {
+        rmdir($dir);
+    }
+});

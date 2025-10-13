@@ -41,12 +41,14 @@ class Nanomanager
          * E.g. "public/uploads"
          */
         string $directory,
+
         /**
          * Base URL used when linking to files.
          *
          * E.g. "https://example.com/uploads"
          */
         protected string $baseUrl,
+
         /**
          * URL used to access Nanomanager API from frontend.
          *
@@ -58,8 +60,18 @@ class Nanomanager
          * Custom frontend HTML file path.
          */
         protected string $frontendFilePath = 'phar://nanomanager.phar/frontend/dist/index.html',
+
+        /**
+         * Enable to automatically create managed directory if it doesn't exist.
+         */
+        bool $createMissingDirectory = false,
     ) {
+        if ($createMissingDirectory && !file_exists($directory)) {
+            mkdir($directory, 0777, true);
+        }
+
         $realDir = realpath($directory);
+
         $handle = false;
         if (false !== $realDir) {
             $this->directory = $realDir;
