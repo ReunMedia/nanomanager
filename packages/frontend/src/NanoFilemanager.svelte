@@ -4,12 +4,20 @@
   import AppFooter from "./lib/components/AppFooter.svelte";
   import FileList from "./lib/components/FileList.svelte";
   import Toasts from "./lib/components/Toasts.svelte";
+  import { store } from "./lib/store/store.svelte";
 
   interface Props {
+    "api-url": string;
     theme?: "dark" | "light";
   }
 
-  let { theme }: Props = $props();
+  let { theme, "api-url": apiUrl }: Props = $props();
+
+  store.apiUrl =
+    // Default placeholder API url is replaced with `localhos` in development
+    apiUrl === "%NANOMANAGER_API_URL%" && import.meta.env.DEV
+      ? "http://localhost:8080"
+      : apiUrl;
 </script>
 
 <div class={["body", theme]}>

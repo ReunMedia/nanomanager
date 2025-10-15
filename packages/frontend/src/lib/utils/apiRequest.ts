@@ -5,13 +5,7 @@ import type {
   operation_uploadFile,
   OperationType,
 } from "../../types/api";
-
-/**
- * URL is set by Nanomanager backend in production
- */
-const apiUrl = import.meta.env.DEV
-  ? "http://localhost:8080"
-  : "%NANOMANAGER_API_URL%";
+import { store } from "../store/store.svelte";
 
 type Operations = Pick<
   {
@@ -48,7 +42,7 @@ async function apiRequest<T extends keyof Operations>(
     });
   }
 
-  const response = await fetch(apiUrl, {
+  const response = await fetch(store.apiUrl, {
     method: "POST",
     body,
   });
