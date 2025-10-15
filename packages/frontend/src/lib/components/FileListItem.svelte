@@ -80,10 +80,9 @@
       const { newName } = response.data;
 
       if (newName === currentName) {
-        // TODO - Show toast on successful rename
         onRenamed(this.previousName, currentName);
       } else {
-        // TODO - Show toast on rename failure
+        showToast(`Invalid filename - File not renamed`);
         currentName = this.previousName;
       }
 
