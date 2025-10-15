@@ -3,6 +3,7 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 import liveReload from "vite-plugin-live-reload";
 import { ViteMinifyPlugin } from "vite-plugin-minify";
 import cssnano from "cssnano";
+import { version } from "./package.json";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,5 +12,8 @@ export default defineConfig({
     postcss: {
       plugins: [cssnano],
     },
+  },
+  define: {
+    "import.meta.env.PACKAGE_VERSION": JSON.stringify(version),
   },
 });

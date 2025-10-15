@@ -11,7 +11,7 @@
       <a
         target="_blank"
         href="https://github.com/ReunMedia/nanomanager/releases"
-        >%NANOMANAGER_VERSION%</a
+        >{import.meta.env.PACKAGE_VERSION}</a
       ></small
     >
   </aside>

@@ -368,7 +368,6 @@ class Nanomanager
     {
         $placeholders = [
             '%NANOMANAGER_API_URL%',
-            '%NANOMANAGER_VERSION%',
         ];
 
         $replacements = [
