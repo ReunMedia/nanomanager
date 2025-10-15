@@ -16,4 +16,11 @@ export default defineConfig({
   define: {
     "import.meta.env.PACKAGE_VERSION": JSON.stringify(version),
   },
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: `nanomanager.js`,
+      },
+    },
+  },
 });
