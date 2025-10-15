@@ -4,14 +4,13 @@ Nano File Manager (or Nanomanager for short) is a minimalist file manager
 delivered in a single PHP (PHAR) file. It can be used to quickly add simple
 upload and file management for any PHP powered website.
 
-Nanomanager is lightweight (the whole package is under 50KB with frontend under
-20KB gzipped) and doesn't contain any unnecessary bells and whistles besides
-core functionality.
+Nanomanager is lightweight and doesn't contain any unnecessary bells and
+whistles besides core functionality.
 
 > ❗ **Important**
 >
-> Nanomanager doesn't include any authentication and therefore it is very
-> important to manually secure access to it.
+> Nanomanager doesn't include any authentication! It is very important to
+> manually secure access to it.
 
 ## Features
 
@@ -68,4 +67,32 @@ $app->get("/admin/nanomanager", function($request, $response) {
   $response->getBody()->write($nanomanagerOutput);
   return $response;
 });
+```
+
+## Additional configuration
+
+### Setting URL dynamically
+
+You can utilize `$_SERVER` to set URL dynamically when configuring Nanomanager. This is useful for development and testing.
+
+> ⚠️ **Warning!**
+>
+> It is recommended to set URL manually in production instead of relying on
+> `$_SERVER` global. This is also illustrated in the example below.
+
+```php
+$proto = ($_SERVER['HTTPS'] ?? false) ? 'https' : 'http';
+$host = is_string($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+$urlBase = "{$proto}://{$host}";
+
+// Override dynamic URL in production
+if($isProduction) {
+  $urlBase = "https://example.com";
+}
+
+$nanomanager = new Nanomanager(
+    $uploadsDir,
+    "{$urlBase}/uploads",
+    "{$urlBase}/admin/nanomanager",
+);
 ```
