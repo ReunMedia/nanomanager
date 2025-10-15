@@ -57,14 +57,20 @@ class Nanomanager
         protected string $apiUrl,
 
         /**
-         * Custom frontend HTML file path.
-         */
-        protected string $frontendFilePath = 'phar://nanomanager.phar/frontend/dist/index.html',
-
-        /**
          * Enable to automatically create managed directory if it doesn't exist.
          */
         bool $createMissingDirectory = false,
+
+        /**
+         * Additional attributes passed frontend Nanomanager component.
+         *
+         * E.g. 'theme="dark"'
+         *
+         * The string is passed to `<nano-filemanager>` element as is without
+         * any processing. Run it through `htmlspecialchars()` beforehand if you
+         * need to handle special characters.
+         */
+        protected string $frontendAttributes = '',
     ) {
         if ($createMissingDirectory && !file_exists($directory)) {
             mkdir($directory, 0777, true);
@@ -112,13 +118,7 @@ class Nanomanager
 
             $output = $this->runOperation($operationType, $parameters);
         } elseif ('GET' === $requestMethod) {
-            $frontendData = file_get_contents($this->frontendFilePath);
-            if (false === $frontendData) {
-                throw new \Exception("Unable to open frontend file inside PHAR. This means that you're probably running Nanomanager in dev mode and need to open frontend separately by running `bun moon run frontend:dev`.");
-            }
-            $frontendData = $this->replaceFrontendPlaceholders($frontendData);
-
-            $output = $frontendData;
+            $output = $this->getFrontend();
         }
 
         return $output;
@@ -213,6 +213,40 @@ class Nanomanager
         }
 
         return (string) json_encode($operationResult);
+    }
+
+    protected function getFrontend(): string
+    {
+        // Set base path for frontend files in Composer installation
+        $distPath = __DIR__.'/../../../frontend/dist/';
+        // If we're running inside PHAR, use PHAR path as base path instead
+        $pharBasePath = \Phar::running();
+        if ('' !== $pharBasePath) {
+            $distPath = "{$pharBasePath}/frontend/dist";
+        }
+        $htmlPath = "{$distPath}/index.html";
+        $jsPath = "{$distPath}/nanomanager.js";
+
+        // Load frontend HTML
+        $frontendHtml = (string) file_get_contents($htmlPath);
+
+        // Load frontend JS and inline it into frontend
+        $frontendJs = (string) file_get_contents($jsPath);
+        $frontendHtml = (string) preg_replace(
+            '~<script.*?src="\/nanomanager.js"><\/script>~',
+            "<script type=\"module\">{$frontendJs}</script>",
+            $frontendHtml
+        );
+
+        // Set Nanomanager element attributes. `api-url` is always defined and
+        // cannot be omitted.
+        $attributes = " api-url=\"{$this->apiUrl}\" ".$this->frontendAttributes;
+
+        return (string) preg_replace(
+            '~(<nano-filemanager.*?)>~',
+            "$1{$attributes}>",
+            $frontendHtml
+        );
     }
 
     #
@@ -363,20 +397,6 @@ class Nanomanager
     #
     #region Utilities
     #
-
-    protected function replaceFrontendPlaceholders(string $frontendData): string
-    {
-        $placeholders = [
-            '%NANOMANAGER_API_URL%',
-        ];
-
-        $replacements = [
-            $this->apiUrl,
-            static::VERSION,
-        ];
-
-        return str_replace($placeholders, $replacements, $frontendData);
-    }
 
     /**
      * Mockable wrapper of `move_uploaded_file()` for testing purposes, since

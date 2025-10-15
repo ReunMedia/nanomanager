@@ -14,8 +14,7 @@
   let { theme, "api-url": apiUrl }: Props = $props();
 
   store.apiUrl =
-    // Default placeholder API url is replaced with `localhos` in development
-    apiUrl === "%NANOMANAGER_API_URL%" && import.meta.env.DEV
+    apiUrl === undefined && import.meta.env.DEV
       ? "http://localhost:8080"
       : apiUrl;
 </script>

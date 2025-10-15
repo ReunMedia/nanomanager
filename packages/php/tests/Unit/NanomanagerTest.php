@@ -11,7 +11,6 @@ function createNanomanager(): Nanomanager
         TestCase::$uploadsDirectory,
         'https://example.com/uploads',
         'https://example.com/nanomanager',
-        __DIR__.'/../fixtures/frontend.html'
     );
 }
 
@@ -405,14 +404,6 @@ describe("'uploadFile' operation", function () {
         // invalid.
         $nanomanager->shouldNotHaveReceived('move_uploaded_file');
     });
-});
-
-test('Frontend placeholder replacements', function () {
-    $nanomanager = createNanomanager();
-    $replaced = $nanomanager->run('GET', '');
-
-    expect($replaced)->not->toContain('"%NANOMANAGER_API_URL%"');
-    expect($replaced)->toContain('"https://example.com/nanomanager"');
 });
 
 test("'createMissingDirectory' config option", function () {
