@@ -1,3 +1,5 @@
+<svelte:options customElement="nano-filemanager" />
+
 <script lang="ts">
   import AppFooter from "./lib/components/AppFooter.svelte";
   import FileList from "./lib/components/FileList.svelte";

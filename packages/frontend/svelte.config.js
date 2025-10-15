@@ -9,5 +9,6 @@ export default {
     experimental: {
       async: true,
     },
+    customElement: true,
   },
 };

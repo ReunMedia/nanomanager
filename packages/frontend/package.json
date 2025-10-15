@@ -23,7 +23,6 @@
     "typescript": "~5.8.3",
     "vite": "^7.1.2",
     "vite-plugin-live-reload": "^3.0.5",
-    "vite-plugin-minify": "^2.1.0",
-    "vite-plugin-singlefile": "^2.3.0"
+    "vite-plugin-minify": "^2.1.0"
   }
 }
