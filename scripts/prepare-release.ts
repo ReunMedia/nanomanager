@@ -25,7 +25,7 @@ async function isValidNextVersion(version: string): Promise<boolean> {
   // version.
   if (semver.order(version, lastTag) === -1) {
     console.error(
-      `Version in package.json must be newer than the last tagged release version (${lastTag}). Run 'bun pm version' in project root to bump the version.`,
+      `Version in package.json must be newer than the last tagged release version (${lastTag}). Run 'bun pm version --no-git-tag-version' in project root to bump the version.`,
     );
     return false;
   }
