@@ -17,7 +17,7 @@ class MinifierCompactor implements Compactor
 {
     public function compact(string $file, string $contents): string
     {
-        if (preg_match('/\.php/', $file)) {
+        if ((bool) preg_match('/\.php/', $file)) {
             $phpCodeMinifier = (new MinifierFactory())->create();
 
             return $phpCodeMinifier->minifyString($contents);

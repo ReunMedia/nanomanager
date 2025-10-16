@@ -3,6 +3,7 @@ parameters:
   paths:
     # - cli
     - src
+    - tools
     # - www
   excludePaths:
     - */tests/*
