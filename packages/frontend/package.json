@@ -5,10 +5,20 @@
   "license": "MIT",
   "author": "Reun Media <company@reun.eu> (https://reun.eu)",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/nanomanager.js",
+      "require": "./dist/nanomanager.umd.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "vite build",
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
     "dev": "vite",
+    "prepack": "bun moon run frontend:build",
     "preview": "vite preview"
   },
   "devDependencies": {
