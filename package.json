@@ -7,7 +7,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@moonrepo/cli": "^1.39.4",
+    "@moonrepo/cli": "^1.41.5",
     "@reunmedia/eslint-config": "^1.6.0",
     "eslint": "^9.34.0",
     "npm-package-json-lint": "^9.0.0",
