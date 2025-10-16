@@ -58,9 +58,6 @@ async function buildFrontend() {
   console.log("Building frontend");
 
   await $`bun moon run frontend:build`;
-
-  console.log("Copying updated frontend to dist");
-  await $`cp -a packages/frontend/dist/. dist/`;
 }
 
 async function prepareRelease(version: string): Promise<number> {

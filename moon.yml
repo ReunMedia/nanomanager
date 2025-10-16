@@ -28,5 +28,3 @@ tasks:
       - "scripts/prepare-release.ts"
     inputs:
       - "project://^?group=sources"
-    outputs:
-      - "dist/**/*"

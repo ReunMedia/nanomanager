@@ -16,7 +16,7 @@ class Nanomanager
     //
     // DEVELOPER NOTE - This is automatically updated by `prepare-release`
     // script
-    public const VERSION = '';
+    public const VERSION = '0.1.0';
 
     /**
      * @var resource
@@ -212,25 +212,35 @@ class Nanomanager
     protected function getFrontend(): string
     {
         // Set base path for frontend files in Composer installation
-        $distPath = __DIR__.'/../../../../dist/';
+        $frontendPath = __DIR__.'/../../../frontend';
         // If we're running inside PHAR, use PHAR path as base path instead
         $pharBasePath = \Phar::running();
         if ('' !== $pharBasePath) {
-            $distPath = "{$pharBasePath}/dist";
+            $frontendPath = "{$pharBasePath}/packages/frontend";
         }
-        $htmlPath = "{$distPath}/index.html";
-        $jsPath = "{$distPath}/nanomanager.js";
+        $htmlPath = "{$frontendPath}/index.html";
+        $jsPath = "{$frontendPath}/dist/nanomanager.umd.cjs";
 
         // Load frontend HTML
         $frontendHtml = (string) file_get_contents($htmlPath);
 
+        if ('' === $frontendHtml) {
+            throw new \Exception("Unable to load frontend HTML from '{$frontendHtml}'.");
+        }
+
         // Load frontend JS and inline it into frontend
         $frontendJs = (string) file_get_contents($jsPath);
+        $replacedCount = 0;
         $frontendHtml = (string) preg_replace(
-            '~<script.*?src="\/nanomanager.js"><\/script>~',
+            '~<script.*?src="\/src/main.ts"><\/script>~',
             "<script type=\"module\">{$frontendJs}</script>",
-            $frontendHtml
+            $frontendHtml,
+            count: $replacedCount
         );
+
+        if ($replacedCount < 1) {
+            throw new \Exception('Unable to inject frontend JS to HTML file.');
+        }
 
         // Set Nanomanager element attributes. `api-url` is always defined and
         // cannot be omitted.
