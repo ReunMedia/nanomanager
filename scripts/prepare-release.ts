@@ -1,5 +1,6 @@
 import { $, semver, write } from "bun";
 import { resolve } from "node:path";
+import rootPackageJson from "../package.json";
 import frontendPackageJson from "../packages/frontend/package.json";
 
 /**
@@ -8,10 +9,10 @@ import frontendPackageJson from "../packages/frontend/package.json";
 const rootDir = resolve(import.meta.dir, "..");
 
 /**
- * Makes sure the version argument is newer compared to latest git tag or
- * package metadata
+ * Makes sure the next version is newer compared to latest git tag or package
+ * metadata
  */
-async function isValidVersionArgument(version: string): Promise<boolean> {
+async function isValidNextVersion(version: string): Promise<boolean> {
   // Get last tag from Git and make sure the version we're releasing is newer
   let lastTag = await $`git describe --tags --abbrev=0 --always`.text();
 
@@ -20,17 +21,11 @@ async function isValidVersionArgument(version: string): Promise<boolean> {
     lastTag = "0.0.0";
   }
 
-  // Sort all versions for comparison
-  const versions = [lastTag, frontendPackageJson.version, version].sort(
-    semver.order,
-  );
-  const lastVersion = versions.at(-1) ?? "0.0.0";
-
   // Make sure the version we're about to release is newer than any other
   // version.
-  if (semver.order(version, lastVersion) === -1) {
+  if (semver.order(version, lastTag) === -1) {
     console.error(
-      `Version argument must be newer than the last release version (${lastVersion})`,
+      `Version in package.json must be newer than the last tagged release version (${lastTag}). Run 'bun pm version' in project root to bump the version.`,
     );
     return false;
   }
@@ -78,7 +73,7 @@ async function prepareRelease(version: string): Promise<number> {
   // Change working directory to project root
   await $.cwd(rootDir);
 
-  if ((await isValidVersionArgument(version)) === false) {
+  if ((await isValidNextVersion(version)) === false) {
     return 1;
   }
 
@@ -91,8 +86,6 @@ async function prepareRelease(version: string): Promise<number> {
   return 0;
 }
 
-const version = process.argv.slice(2)[0] ?? "";
+const version = rootPackageJson.version;
 
 process.exitCode = await prepareRelease(version);
-
-// export default "";
