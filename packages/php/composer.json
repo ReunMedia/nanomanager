@@ -1,18 +1,7 @@
 {
     "name": "reun/nanomanager",
-    "description": "Modern and minimalist file manager in a single PHP file",
+    "description": "",
     "license": "MIT",
-    "type": "library",
-    "authors": [
-        {
-            "name": "Reun Media",
-            "email": "company@reun.eu",
-            "homepage": "https://reun.eu"
-        }
-    ],
-    "require": {
-        "php": "^8.2"
-    },
     "require-dev": {
         "buggregator/trap": "^1.13",
         "humbug/box": "^4.6",

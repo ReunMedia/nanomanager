@@ -1,13 +1,29 @@
 {
     "name": "reun/nanomanager",
-    "description": "Nano File Manager monorepo",
+    "description": "Modern and minimalist file manager in a single PHP file",
     "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Reun Media",
+            "email": "company@reun.eu",
+            "homepage": "https://reun.eu"
+        }
+    ],
+    "require": {
+        "php": "^8.2"
+    },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.47",
         "friendsofphp/php-cs-fixer": "^3.86",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-strict-rules": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nanomanager\\": "packages/php/src/Nanomanager"
+        }
     },
     "config": {
         "allow-plugins": {
