@@ -1,6 +1,5 @@
 {
     "name": "reun/nanomanager",
-    "version": "0.1.0",
     "description": "Modern and minimalist file manager in a single PHP file",
     "license": "MIT",
     "type": "library",

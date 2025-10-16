@@ -1,7 +1,6 @@
 import { $, semver, write } from "bun";
 import { resolve } from "node:path";
 import frontendPackageJson from "../packages/frontend/package.json";
-import phpComposerJson from "../packages/php/composer.json";
 
 /**
  * Project root directory
@@ -22,12 +21,9 @@ async function isValidVersionArgument(version: string): Promise<boolean> {
   }
 
   // Sort all versions for comparison
-  const versions = [
-    lastTag,
-    frontendPackageJson.version,
-    phpComposerJson.version,
-    version,
-  ].sort(semver.order);
+  const versions = [lastTag, frontendPackageJson.version, version].sort(
+    semver.order,
+  );
   const lastVersion = versions.at(-1) ?? "0.0.0";
 
   // Make sure the version we're about to release is newer than any other
@@ -53,21 +49,14 @@ async function synchronizePackageVersions(version: string) {
   );
 
   frontendPackageJson.version = version;
-  phpComposerJson.version = version;
 
   await Promise.all([
     write(
       `${rootDir}/packages/frontend/package.json`,
       JSON.stringify(frontendPackageJson, null, 2) + "\n",
     ),
-    await write(
-      `${rootDir}/packages/php/composer.json`,
-      JSON.stringify(phpComposerJson, null, 4) + "\n",
-    ),
     await write(phpFilePath, nanomanagerPhpContent),
   ]);
-
-  await $`composer update`.cwd("./packages/php");
 }
 
 async function buildFrontend() {
