@@ -3,7 +3,7 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 import liveReload from "vite-plugin-live-reload";
 import { ViteMinifyPlugin } from "vite-plugin-minify";
 import cssnano from "cssnano";
-import { version } from "./package.json";
+import { version, license, author } from "./package.json";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -20,6 +20,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         entryFileNames: `nanomanager.js`,
+        banner: `
+/*! Nano File Manager version ${version}
+ * Copyright © 2025 ${author}
+ * Licensed under ${license}
+ */`,
       },
     },
   },
