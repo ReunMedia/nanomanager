@@ -1,6 +1,10 @@
 dependsOn:
   - frontend
 
+fileGroups:
+  outputs:
+    - "dist/**/*"
+
 tasks:
   build:
     command:
@@ -14,6 +18,8 @@ tasks:
     inputs:
       - "@group(phpSources)"
       - "box.json"
+    outputs:
+      - "@group(outputs)"
 
   preview:
     command: composer preview
@@ -33,3 +39,11 @@ tasks:
       - "@group(phpTests)"
       - "docker-compose.yaml"
       - "docker/*"
+
+  # Extracts built PHAR to a test directory
+  extract-phar:
+    script: "rm -rf _phar/* && phar extract -f dist/Nanomanager.phar _phar"
+    outputs:
+      - "_phar/**/*"
+    deps:
+      - build

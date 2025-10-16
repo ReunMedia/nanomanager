@@ -13,16 +13,10 @@ class Nanomanager
      */
     // DEVELOPER NOTE - Using `@var string` instead of PHP type drops PHP
     // requirement from `8.3` to `8.2`
-    public const VERSION = '@git_version@';
-
-    /**
-     * Full SHA of the commit this version was built from.
-     *
-     * @var string
-     */
-    // DEVELOPER NOTE - Using `@var string` instead of PHP type drops PHP
-    // requirement from `8.3` to `8.2`
-    public const COMMIT_SHA = '@git_commit@';
+    //
+    // DEVELOPER NOTE - This is automatically updated by `prepare-release`
+    // script
+    public const VERSION = '';
 
     /**
      * @var resource
@@ -218,11 +212,11 @@ class Nanomanager
     protected function getFrontend(): string
     {
         // Set base path for frontend files in Composer installation
-        $distPath = __DIR__.'/../../../frontend/dist/';
+        $distPath = __DIR__.'/../../../../dist/';
         // If we're running inside PHAR, use PHAR path as base path instead
         $pharBasePath = \Phar::running();
         if ('' !== $pharBasePath) {
-            $distPath = "{$pharBasePath}/frontend/dist";
+            $distPath = "{$pharBasePath}/dist";
         }
         $htmlPath = "{$distPath}/index.html";
         $jsPath = "{$distPath}/nanomanager.js";

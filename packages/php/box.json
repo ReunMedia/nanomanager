@@ -1,12 +1,10 @@
 {
-  "base-path": "..",
-  "main": "php/src/Nanomanager/Nanomanager.php",
-  "output": "php/dist/Nanomanager.phar",
+  "base-path": "../../",
+  "main": "packages/php/src/Nanomanager/Nanomanager.php",
+  "output": "packages/php/dist/Nanomanager.phar",
   "check-requirements": false,
-  "directories": ["php/src/Nanomanager", "frontend/dist"],
+  "directories": ["packages/php/src/Nanomanager", "dist"],
   "shebang": false,
   "dump-autoload": false,
-  "compactors": ["KevinGH\\Box\\Compactor\\Php", "Tools\\MinifierCompactor"],
-  "git-version": "git_version",
-  "git-commit": "git_commit"
+  "compactors": ["KevinGH\\Box\\Compactor\\Php", "Tools\\MinifierCompactor"]
 }

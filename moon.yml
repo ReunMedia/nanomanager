@@ -10,3 +10,8 @@ tasks:
     deps:
       - "lintPkgJson"
       - "lintComposerJson"
+
+  prepare-release:
+    command:
+      - "bun"
+      - "scripts/prepare-release.ts"
