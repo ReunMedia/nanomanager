@@ -89,3 +89,6 @@ phpstan.neon
 .wrangler
 .svelte-kit
 build
+
+# Frontend dist
+!/dist
