@@ -1,10 +1,3 @@
-fileGroups:
-  sources:
-    - "public/**/*.js"
-    - "src/**/*"
-  tests:
-    - "tests/**/*"
-
 tasks:
   format:
     command:
@@ -28,10 +21,10 @@ tasks:
       # Use global .prettierignore and .gitignore
       - "/.prettierignore"
       - "/.gitignore"
-      - "@group(sources)"
-      - "@group(tests)"
       # Config and other files
       - "**/*.{md,mdx,yml,yaml,json,js,mjs,ts}"
+    options:
+      mergeInputs: "prepend"
 
   lint:
     command:
@@ -42,14 +35,11 @@ tasks:
       - "**/eslint.config.mjs"
       - "/eslint.config.mjs"
     deps:
-      - "lintPkgJson"
-      - "format"
+      - lintPkgJson
+      - format
 
   test:
-    script: "bun test"
-    inputs:
-      - "@group(sources)"
-      - "@group(tests)"
+    command: "bun test"
 
   dev:
     command: "bun dev"

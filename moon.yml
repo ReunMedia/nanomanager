@@ -1,3 +1,7 @@
+dependsOn:
+  - "frontend"
+  - "php"
+
 workspace:
   # Only inherit specific tasks for root project
   inheritedTasks:
@@ -11,7 +15,18 @@ tasks:
       - "lintPkgJson"
       - "lintComposerJson"
 
+  build:
+    deps:
+      - prepare-release
+      - php:build
+    options:
+      runDepsInParallel: false
+
   prepare-release:
     command:
       - "bun"
       - "scripts/prepare-release.ts"
+    inputs:
+      - "project://^?group=sources"
+    outputs:
+      - "dist/**/*"

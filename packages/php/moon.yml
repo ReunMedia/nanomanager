@@ -11,15 +11,9 @@ tasks:
       - "vendor/bin/box"
       - "compile"
     deps:
-      - format
-      - lint
-      - test
-      - ^:build
+      - frontend:build
     inputs:
-      - "@group(phpSources)"
       - "box.json"
-    outputs:
-      - "@group(outputs)"
 
   preview:
     command: composer preview
@@ -35,8 +29,8 @@ tasks:
       - "up"
       - "--build"
     inputs:
-      - "@group(phpSources)"
-      - "@group(phpTests)"
+      - "@group(sources)"
+      - "@group(tests)"
       - "docker-compose.yaml"
       - "docker/*"
 

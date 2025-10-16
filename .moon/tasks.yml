@@ -1,4 +1,48 @@
+fileGroups:
+  sources:
+    - "src/**/*"
+    - "!_*/**/*"
+  configs:
+    - "*.config.{js,cjs,mjs,ts}"
+    - "tsconfig*.json"
+  tests:
+    - "tests/**/*"
+    - "!_*/**/*"
+
 tasks:
+  format:
+    inputs:
+      - "@group(sources)"
+      - "@group(configs)"
+      - "@group(tests)"
+
+  lint:
+    inputs:
+      - "@group(sources)"
+      - "@group(configs)"
+      - "@group(tests)"
+    deps:
+      - format
+
+  build:
+    inputs:
+      - "@group(sources)"
+      - "@group(configs)"
+    outputs:
+      - "dist/*"
+    deps:
+      - format
+      - lint
+      - test
+
+  test:
+    inputs:
+      - "@group(sources)"
+      - "@group(configs)"
+      - "@group(tests)"
+
+  dev:
+
   lintPkgJson:
     command: "npmPkgJsonLint ."
     inputs:

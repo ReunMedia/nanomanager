@@ -1,10 +1,3 @@
-fileGroups:
-  phpSources:
-    - "./*.php"
-    - "src/**/*.php"
-  phpTests:
-    - "tests/**/*.php"
-
 tasks:
   format:
     command:
@@ -13,26 +6,17 @@ tasks:
       - "."
       - "--config=$workspaceRoot/.php-cs-fixer.php"
     inputs:
-      - "@group(phpSources)"
-      - "@group(phpTests)"
       - ".php-cs-fixer.php" # Invalidate task cache on config change
 
   lint:
-    command:
-      - "$workspaceRoot/vendor/bin/phpstan"
+    command: "$workspaceRoot/vendor/bin/phpstan"
     inputs:
-      - "@group(phpSources)"
-      - "@group(phpTests)"
       - "phpstan.dist.neon" # Invalidate task cache on config change
     deps:
-      - "lintComposerJson"
-      - "format"
+      - lintComposerJson
 
   test:
     command: "vendor/bin/pest"
-    inputs:
-      - "@group(phpSources)"
-      - "@group(phpTests)"
 
   dev:
     command: "composer dev"
