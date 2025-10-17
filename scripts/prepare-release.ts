@@ -14,7 +14,9 @@ const rootDir = resolve(import.meta.dir, "..");
  */
 async function isValidNextVersion(version: string): Promise<boolean> {
   // Get last tag from Git and make sure the version we're releasing is newer
-  let lastTag = await $`git describe --tags --abbrev=0 --always`.text();
+  let lastTag = (
+    await $`git describe --tags --abbrev=0 --always`.text()
+  ).trim();
 
   // Handle the case of no git tags
   if (lastTag.indexOf(".") === -1) {
