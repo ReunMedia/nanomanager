@@ -11,7 +11,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Nanomanager\\": "src/Nanomanager",
+            "Reun\\Nanomanager\\": "src/Nanomanager",
             "Tests\\": "tests/",
             "Tools\\": "tools/"
         }

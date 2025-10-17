@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Nanomanager\\": "packages/php/src/Nanomanager"
+            "Reun\\Nanomanager\\": "packages/php/src/Nanomanager"
         }
     },
     "config": {

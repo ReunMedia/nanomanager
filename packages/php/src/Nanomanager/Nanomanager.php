@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Nanomanager;
+namespace Reun\Nanomanager;
 
 class Nanomanager
 {
@@ -16,7 +16,7 @@ class Nanomanager
     //
     // DEVELOPER NOTE - This is automatically updated by `prepare-release`
     // script
-    public const VERSION = '0.2.0';
+    public const VERSION = '0.3.0';
 
     /**
      * @var resource

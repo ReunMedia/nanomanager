@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Nanomanager\Nanomanager;
+use Reun\Nanomanager\Nanomanager;
 use Tests\TestCase;
 
 function createNanomanager(): Nanomanager

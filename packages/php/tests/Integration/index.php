@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Nanomanager\Nanomanager;
+use Reun\Nanomanager\Nanomanager;
 
 // Disable CORS in development
 header('Access-Control-Allow-Origin: *');
