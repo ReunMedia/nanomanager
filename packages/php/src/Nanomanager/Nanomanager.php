@@ -16,7 +16,7 @@ class Nanomanager
     //
     // DEVELOPER NOTE - This is automatically updated by `prepare-release`
     // script
-    public const VERSION = '0.1.0';
+    public const VERSION = '0.2.0';
 
     /**
      * @var resource
@@ -60,7 +60,7 @@ class Nanomanager
          *
          * E.g. 'theme="dark"'
          *
-         * The string is passed to `<nano-filemanager>` element as is without
+         * The string is passed to `<nano-file-manager>` element as is without
          * any processing. Run it through `htmlspecialchars()` beforehand if you
          * need to handle special characters.
          */
@@ -247,7 +247,7 @@ class Nanomanager
         $attributes = " api-url=\"{$this->apiUrl}\" ".$this->frontendAttributes;
 
         return (string) preg_replace(
-            '~(<nano-filemanager.*?)>~',
+            '~(<nano-file-manager.*?)>~',
             "$1{$attributes}>",
             $frontendHtml
         );

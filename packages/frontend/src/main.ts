@@ -1,1 +1,1 @@
-export { default } from "./NanoFilemanager.svelte";
+export { default } from "./NanoFileManager.svelte";
