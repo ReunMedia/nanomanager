@@ -35,7 +35,9 @@
   /**
    * URL to file
    */
-  let fileUrl = $derived(baseUrl.replace(/\/+$/, "") + "/" + currentName);
+  let fileUrl = $derived(
+    encodeURI(baseUrl.replace(/\/+$/, "") + "/" + currentName),
+  );
 
   interface ConfirmableOperation {
     /**
