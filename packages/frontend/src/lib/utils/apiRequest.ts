@@ -22,8 +22,12 @@ async function apiRequest<T extends keyof Operations>(
   parameters: Operations[T]["parameters"],
 ): Promise<Operations[T]["result"]> {
   let body: string | FormData = "";
+  const headers: HeadersInit = {
+    Accept: "application/json",
+  };
 
-  // Handle file uploads as `multipart/form-data`
+  // Handle file uploads as `multipart/form-data` and let `fetch()` set
+  // `Content-Type` header automatically.
   if (operation === "uploadFile") {
     body = new FormData();
 
@@ -40,11 +44,14 @@ async function apiRequest<T extends keyof Operations>(
       operationType: operation,
       parameters,
     });
+
+    headers["Content-Type"] = "application/json";
   }
 
   const response = await fetch(store.apiUrl, {
     method: "POST",
     body,
+    headers,
   });
 
   const data: Operations[T]["result"] = await response.json();
