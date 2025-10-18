@@ -7,7 +7,18 @@
   import { store } from "./lib/store/store.svelte";
 
   interface Props {
+    /**
+     * Full URL to Nanomanager PHP API
+     *
+     * E.g. `https:example.com/admin/nanomanager`
+     */
     "api-url": string;
+
+    /**
+     * Override automatic theme that is based on `prefers-color-scheme`
+     *
+     * Can be used to match theme when embedding to existing website.
+     */
     theme?: "dark" | "light";
   }
 

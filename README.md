@@ -41,11 +41,9 @@ require_once "path/to/Nanomanager.phar";
 
 ## Usage
 
-### Simple Example
-
-To use Nanomanager, simply create a new instance by passing configuration as
-constructor parameters. Then just call `run()` with request method and body. It
-returns a string that can be outputted to browser.
+To use Nanomanager, create a new instance by passing configuration to
+constructor and call `run()` which returns a string that can be outputted to
+browser.
 
 ```php
 use Reun\Nanomanager\Nanomanager;
@@ -61,34 +59,51 @@ $nanomanager = new Nanomanager(
 echo $nanomanager->run();
 ```
 
-> ℹ️ **Note**
->
-> Nanomanager API is fully configured with constructor parameters. See
-> [`Nanomanager.php`](packages/php/src/Nanomanager/Nanomanager.php) for full
-> list of options.
+### Framework integration
 
-### Framework Integration
-
-Since `run()` accepts request method, body and headers as optional arguments and
-returns a string, you can easily integrate Nanomanager with any existing PHP
-framework. The example below uses Slim Framework, but can be adapted to any PHP
-framework.
+You can manually pass request method and body to `run()` as optional arguments
+to integrate Nanomanager with any existing PHP framework.
 
 ```php
 $app->any("/admin/nanomanager", function($request, $response) {
   $nanomanager = new Nanomanager\Nanomanager(...);
 
-  $nanomanagerOutput = $nanomanager->run(
-    $request->getMethod(),
-    (string) $request->getBody(),
-  );
+  $response->getBody()->write($nanomanager->run(
+      $request->getMethod(),
+      (string) $request->getBody(),
+  ));
 
-  $response->getBody()->write($nanomanagerOutput);
   return $response;
 });
 ```
 
-## Embedding Nanomanager frontend as Custom Element
+## Configuration
+
+### PHP API configuration
+
+PHP API is configured with constructor parameters. Check out
+[`Nanomanager.php`](packages/php/src/Nanomanager/Nanomanager.php) for full list
+of options.
+
+```php
+new Nanomanager(..., createMissingDirectory: true);
+```
+
+### Frontend configuration
+
+Frontend is configured with HTML attributes. Check out `Props` interface in
+[NanoFileManager.svelte](packages/frontend/src/NanoFileManager.svelte) for full
+list of options.
+
+If you're not [embedding
+frontend](#embedding-nanomanager-frontend-to-existing-page) yourself, you can
+customize frontend with `frontendAttributes` parameter.
+
+```php
+new Nanomanager(..., frontendAttributes: 'theme="dark"');
+```
+
+## Embedding Nanomanager frontend to existing page
 
 Nanomanager frontend can easily be embedded to any existing HTML page or JS
 framework as a custom element.
@@ -101,7 +116,7 @@ framework as a custom element.
 
 The custom element is loaded from `nanomanager.umd.cjs` file, which can be found
 in `vendor/reun/nanomanager/packages/frontend/dist/nanomanager.umd.cjs` if you
-installed Nanomanagere with Composer. For PHAR installation, you can copy the
+installed Nanomanager with Composer. For PHAR installation, you can copy the
 file from [releases](https://github.com/ReunMedia/nanomanager/releases).
 
 ### Using `<script>` tag in HTML file
@@ -141,7 +156,7 @@ const apiUrl = window.location.origin + "/admin/nanomanager";
 </template>
 ```
 
-## Additional configuration
+## Additional tips
 
 ### Setting URL dynamically
 
