@@ -179,7 +179,7 @@ if($isProduction) {
 }
 
 $nanomanager = new Nanomanager(
-    $uploadsDir,
+    "path/to/uploads",
     "{$urlBase}/uploads",
     "{$urlBase}/admin/nanomanager",
 );
