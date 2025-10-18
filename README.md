@@ -58,10 +58,7 @@ $nanomanager = new Nanomanager(
   "https://example.com/admin/nanomanager" // URL to access Nanomanager
 );
 
-echo $nanomanager->run(
-    $_SERVER['REQUEST_METHOD'],
-    file_get_contents('php://input')
-);
+echo $nanomanager->run();
 ```
 
 > ℹ️ **Note**
@@ -72,11 +69,13 @@ echo $nanomanager->run(
 
 ### Framework Integration
 
-Since `run()` accepts request method and body as arguments and returns a string,
-you can easily integrate Nanomanager with any existing PHP framework.
+Since `run()` accepts request method, body and headers as optional arguments and
+returns a string, you can easily integrate Nanomanager with any existing PHP
+framework. The example below uses Slim Framework, but can be adapted to any PHP
+framework.
 
 ```php
-$app->get("/admin/nanomanager", function($request, $response) {
+$app->any("/admin/nanomanager", function($request, $response) {
   $nanomanager = new Nanomanager\Nanomanager(...);
 
   $nanomanagerOutput = $nanomanager->run(

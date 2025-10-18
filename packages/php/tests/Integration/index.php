@@ -30,7 +30,4 @@ $baseUrl = "{$proto}://{$host}/{$uploadsDir}";
 $apiUrl = "{$proto}://{$host}";
 
 $nanomanager = new Nanomanager($dir, $baseUrl, $apiUrl);
-echo $nanomanager->run(
-    $_SERVER['REQUEST_METHOD'],
-    file_get_contents('php://input')
-);
+echo $nanomanager->run();

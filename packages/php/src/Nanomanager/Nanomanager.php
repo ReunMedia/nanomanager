@@ -16,7 +16,7 @@ class Nanomanager
     //
     // DEVELOPER NOTE - This is automatically updated by `prepare-release`
     // script
-    public const VERSION = '0.4.0';
+    public const VERSION = '0.5.0';
 
     /**
      * @var resource
@@ -84,10 +84,16 @@ class Nanomanager
     }
 
     /**
-     * @param "GET"|"POST" $requestMethod
+     * @param null|"GET"|"POST" $requestMethod
      */
-    public function run(string $requestMethod, string $requestBody): string
-    {
+    public function run(
+        ?string $requestMethod = null,
+        ?string $requestBody = null
+    ): string {
+        // Automatically get arguments that were not passed
+        $requestMethod = $requestMethod ?? $_SERVER['REQUEST_METHOD'];
+        $requestBody = $requestBody ?? (string) file_get_contents('php://input');
+
         $output = '';
 
         if ('POST' === $requestMethod) {
@@ -109,6 +115,9 @@ class Nanomanager
                     $parameters = [];
                 }
             }
+
+            // All operation responses are returned as JSON
+            header('Content-Type: application/json; charset=utf-8');
 
             $output = $this->runOperation($operationType, $parameters);
         } elseif ('GET' === $requestMethod) {
@@ -164,9 +173,6 @@ class Nanomanager
      */
     protected function runOperation(string $operationType, array $parameters): string
     {
-        // All operation responses are returned as JSON
-        header('Content-Type: application/json; charset=utf-8');
-
         $operationResult = [];
 
         switch ($operationType) {
