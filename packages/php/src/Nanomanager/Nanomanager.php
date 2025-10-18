@@ -16,7 +16,7 @@ class Nanomanager
     //
     // DEVELOPER NOTE - This is automatically updated by `prepare-release`
     // script
-    public const VERSION = '0.5.0';
+    public const VERSION = '0.6.0';
 
     /**
      * @var resource
