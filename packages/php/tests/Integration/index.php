@@ -6,6 +6,7 @@ use Reun\Nanomanager\Nanomanager;
 
 // Disable CORS in development
 header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: Content-Type');
 
 // Create test uploads directory
 $uploadsDir = '_uploads';
