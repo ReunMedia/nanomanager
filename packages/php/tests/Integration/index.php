@@ -22,6 +22,13 @@ if ('true' === ($_ENV['NANOMANAGER_PREVIEW'] ?? false)) {
 // Dev mode uses autoloader `(src/Nanomanager/Nanomanager.php)`
 else {
     require_once __DIR__.'/../../vendor/autoload.php';
+
+    $host = $_SERVER['HTTP_HOST'];
+    $method = $_SERVER['REQUEST_METHOD'];
+
+    if (str_ends_with($host, ':8080') && 'GET' === $method) {
+        trigger_error("You're accessing {$host} in development which uses built dist version of Nanomanager. You probably wanted to go to http://localhost:5173 instead.", E_USER_WARNING);
+    }
 }
 
 $proto = ($_SERVER['HTTPS'] ?? false) ? 'https' : 'http';
