@@ -16,7 +16,7 @@ class Nanomanager
     //
     // DEVELOPER NOTE - This is automatically updated by `prepare-release`
     // script
-    public const VERSION = '0.6.0';
+    public const VERSION = '0.7.0';
 
     /**
      * @var resource
@@ -51,9 +51,9 @@ class Nanomanager
         protected string $apiUrl,
 
         /**
-         * Enable to automatically create managed directory if it doesn't exist.
+         * Automatically create managed directory if it doesn't exist.
          */
-        bool $createMissingDirectory = false,
+        bool $createMissingDirectory = true,
 
         /**
          * Additional attributes passed frontend Nanomanager component.
@@ -78,7 +78,7 @@ class Nanomanager
             $handle = opendir($this->directory);
         }
         if (false === $handle) {
-            throw new \RuntimeException("Unable to open directory '{$directory}");
+            throw new \RuntimeException("Unable to open directory '{$directory}'");
         }
         $this->handle = $handle;
     }
