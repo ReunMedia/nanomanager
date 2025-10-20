@@ -1,0 +1,17 @@
+{
+    "require": {
+        "reun/nanomanager": "@dev"
+    },
+    "repositories": {
+        "reun/nanomanager": {
+            "type": "path",
+            "url": "../../../packages/php"
+        }
+    },
+    "scripts": {
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "php -S 0.0.0.0:8080 -t public"
+        ]
+    }
+}

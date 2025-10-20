@@ -1,0 +1,66 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "8137af57619d2d1c322364f9563ca621",
+    "packages": [
+        {
+            "name": "reun/nanomanager",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../../../packages/php",
+                "reference": "9478e4318fd3dbff4dcbd726f8f5512ae50d204c"
+            },
+            "require-dev": {
+                "buggregator/trap": "^1.13",
+                "humbug/box": "^4.6",
+                "mockery/mockery": "^1.6",
+                "pestphp/pest": "^4.0",
+                "php-code-minifier/php-code-minifier": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Reun\\Nanomanager\\": "src/Nanomanager",
+                    "Tests\\": "tests/",
+                    "Tools\\": "tools/"
+                }
+            },
+            "scripts": {
+                "dev": [
+                    "Composer\\Config::disableProcessTimeout",
+                    "php -S 0.0.0.0:8080 -t tests/Integration"
+                ],
+                "preview": [
+                    "Composer\\Config::disableProcessTimeout",
+                    "@putenv NANOMANAGER_PREVIEW=true",
+                    "php -d variables_order=EGPCS -S 0.0.0.0:8081 -t tests/Integration"
+                ],
+                "trap": [
+                    "Composer\\Config::disableProcessTimeout",
+                    "vendor/bin/trap"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "transport-options": {
+                "relative": true
+            }
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "reun/nanomanager": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
+}
