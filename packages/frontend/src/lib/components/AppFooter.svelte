@@ -19,6 +19,6 @@
 
 <style>
   footer {
-    padding: 2em 0 1em 0;
+    padding: 2em 1em 1em 1em;
   }
 </style>

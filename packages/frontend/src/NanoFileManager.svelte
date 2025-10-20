@@ -125,7 +125,7 @@
   :global(input[type="file"]) {
     /* Negate padding for file input in favor of `::file-selector-button`
        padding */
-    padding: 0;
+    padding: 0 0 0 1em;
     border-color: transparent;
     outline: none;
 
@@ -210,7 +210,6 @@
     flex-direction: column;
     flex: 1;
     max-width: 960px;
-    padding-top: 2em;
     width: 100%;
     margin: 0 auto;
   }
@@ -220,6 +219,6 @@
   }
 
   h1 {
-    margin: 0 0 1em 0;
+    margin: 2rem 1rem;
   }
 </style>

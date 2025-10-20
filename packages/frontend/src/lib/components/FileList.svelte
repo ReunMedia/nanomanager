@@ -70,6 +70,7 @@
       gap: 2em;
       flex-direction: row;
       min-height: 1px;
+      padding-right: 1em;
     }
 
     & li + li {
