@@ -38,6 +38,10 @@ tasks:
       - lintPkgJson
       - format
 
+  build:
+    inputs:
+      - package.json
+
   test:
     command: "bun test"
 
