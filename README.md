@@ -4,7 +4,7 @@ Nano File Manager (or Nanomanager for short) is a minimalist PHP file manager.
 It can be used to quickly add simple uploads and file management to any PHP
 powered website.
 
-> ❗ **Important**
+> ❗ **Caution**
 >
 > Nanomanager doesn't include any authentication! Therefore it is very important
 > to manually secure access to it.
