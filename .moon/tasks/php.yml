@@ -6,17 +6,27 @@ tasks:
       - "."
       - "--config=$workspaceRoot/.php-cs-fixer.php"
     inputs:
+      - "@group(sources)"
+      - "@group(configs)"
+      - "@group(tests)"
       - ".php-cs-fixer.php" # Invalidate task cache on config change
 
   lint:
     command: "$workspaceRoot/vendor/bin/phpstan"
     inputs:
+      - "@group(sources)"
+      - "@group(configs)"
       - "phpstan.dist.neon" # Invalidate task cache on config change
     deps:
       - lintComposerJson
+      - format
 
   test:
     command: "vendor/bin/pest"
+    inputs:
+      - "@group(sources)"
+      - "@group(configs)"
+      - "@group(tests)"
 
   dev:
     command: "composer dev"

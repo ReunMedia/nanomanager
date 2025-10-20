@@ -10,20 +10,6 @@ fileGroups:
     - "!_*/**/*"
 
 tasks:
-  format:
-    inputs:
-      - "@group(sources)"
-      - "@group(configs)"
-      - "@group(tests)"
-
-  lint:
-    inputs:
-      - "@group(sources)"
-      - "@group(configs)"
-      - "@group(tests)"
-    deps:
-      - format
-
   build:
     inputs:
       - "@group(sources)"
@@ -34,14 +20,6 @@ tasks:
       - format
       - lint
       - test
-
-  test:
-    inputs:
-      - "@group(sources)"
-      - "@group(configs)"
-      - "@group(tests)"
-
-  dev:
 
   lintPkgJson:
     command: "npmPkgJsonLint ."

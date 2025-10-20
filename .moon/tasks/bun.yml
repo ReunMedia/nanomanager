@@ -23,14 +23,16 @@ tasks:
       - "/.gitignore"
       # Config and other files
       - "**/*.{md,mdx,yml,yaml,json,js,mjs,ts}"
-    options:
-      mergeInputs: "prepend"
+      - "@group(sources)"
+      - "@group(configs)"
+      - "@group(tests)"
 
   lint:
     command:
       - "eslint"
     inputs:
       - "@group(sources)"
+      - "@group(configs)"
       - "@group(tests)"
       - "**/eslint.config.mjs"
       - "/eslint.config.mjs"
@@ -38,12 +40,12 @@ tasks:
       - lintPkgJson
       - format
 
-  build:
-    inputs:
-      - package.json
-
   test:
     command: "bun test"
+    inputs:
+      - "@group(sources)"
+      - "@group(configs)"
+      - "@group(tests)"
 
   dev:
     command: "bun dev"
