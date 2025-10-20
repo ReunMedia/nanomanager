@@ -10,4 +10,5 @@
 - [ ] Push with tags
   - `git push --follow-tags`
 - [ ] [Create a new release](https://github.com/ReunMedia/nanomanager/releases/new)
-- [ ] Add `Nanomanager.PHAR` and `nanomanager.umd.cjs` as additional files
+- [ ] Add `Nanomanager.PHAR` and `nanomanager.js` as additional files
+  - [ ] Rename `nanomanager.js` to `nanomanager-0.0.0.js`

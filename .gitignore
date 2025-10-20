@@ -90,6 +90,5 @@ phpstan.neon
 .svelte-kit
 build
 
-# Include frontend UMD build in repository for Composer installation
+# Include frontend in repository for Composer installation
 !/packages/frontend/dist/
-/packages/frontend/dist/nanomanager.js

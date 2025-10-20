@@ -1,21 +1,20 @@
 {
   "name": "@reunmedia/nanomanager",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "license": "MIT",
   "author": "Reun Media <company@reun.eu> (https://reun.eu)",
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/nanomanager.js",
-      "require": "./dist/nanomanager.umd.cjs"
+      "default": "./dist/nanomanager.js"
     }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && esbuild dist/**/*.js --outdir=dist --allow-overwrite --charset=utf8 --minify-whitespace --format=esm",
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
     "dev": "vite",
     "prepack": "bun moon run frontend:build",

@@ -86,7 +86,7 @@ PHP API is configured with constructor parameters. Check out
 of options.
 
 ```php
-new Nanomanager(..., createMissingDirectory: true);
+new Nanomanager(..., createMissingDirectory: false);
 ```
 
 ### Frontend configuration
@@ -114,21 +114,21 @@ framework as a custom element.
 ></nano-file-manager>
 ```
 
-The custom element is loaded from `nanomanager.umd.cjs` file, which can be found
-in `vendor/reun/nanomanager/packages/frontend/dist/nanomanager.umd.cjs` if you
+The custom element is loaded from `nanomanager.js` file, which can be found
+in `vendor/reun/nanomanager/packages/frontend/dist/nanomanager.js` if you
 installed Nanomanager with Composer. For PHAR installation, you can copy the
 file from [releases](https://github.com/ReunMedia/nanomanager/releases).
 
 ### Using `<script>` tag in HTML file
 
-To embed Nanomanager into any HTML page, you need to copy `nanomanager.umd.cjs`
+To embed Nanomanager into any HTML page, you need to copy `nanomanager.js`
 into publicly accessible asset directory and include it as a script tag. It is
 recommended to rename the file to include version number to avoid caching
 issues.
 
 ```html
 <head>
-  <script type="module" src="/path/to/nanomanager-1.0.0.umd.cjs"></script>
+  <script src="/path/to/nanomanager-1.0.0.js"></script>
 </head>
 <body>
   ...
@@ -144,8 +144,8 @@ as an example, but it works with any JS framework or even without one.
 
 ```vue
 <script setup>
-// Load `nanomanager.umd.cjs` from Composer package
-import "../vendor/reun/nanomanager/packages/frontend/dist/nanomanager.umd.cjs";
+// Load `nanomanager.js` from Composer package
+import "../vendor/reun/nanomanager/packages/frontend/dist/nanomanager.js";
 
 // Using dynamic hostname for easy access in both development and production
 const apiUrl = window.location.origin + "/admin/nanomanager";

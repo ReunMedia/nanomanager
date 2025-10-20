@@ -16,7 +16,7 @@ class Nanomanager
     //
     // DEVELOPER NOTE - This is automatically updated by `prepare-release`
     // script
-    public const VERSION = '0.7.0';
+    public const VERSION = '0.8.0';
 
     /**
      * @var resource
@@ -225,7 +225,7 @@ class Nanomanager
             $frontendPath = "{$pharBasePath}/packages/frontend";
         }
         $htmlPath = "{$frontendPath}/index.html";
-        $jsPath = "{$frontendPath}/dist/nanomanager.umd.cjs";
+        $jsPath = "{$frontendPath}/dist/nanomanager.js";
 
         // Load frontend HTML
         $frontendHtml = (string) file_get_contents($htmlPath);

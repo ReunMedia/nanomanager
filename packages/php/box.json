@@ -4,7 +4,7 @@
   "output": "packages/php/dist/Nanomanager.phar",
   "check-requirements": false,
   "files": [
-    "packages/frontend/dist/nanomanager.umd.cjs",
+    "packages/frontend/dist/nanomanager.js",
     "packages/frontend/index.html"
   ],
   "directories": ["packages/php/src/Nanomanager"],
