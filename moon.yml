@@ -11,6 +11,11 @@ workspace:
 
 tasks:
   lint:
+    command:
+      - eslint
+      - "@in(0)"
+    inputs:
+      - scripts/**/*
     deps:
       - "lintPkgJson"
       - "lintComposerJson"

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { $, semver, write } from "bun";
 import { resolve } from "node:path";
 import rootPackageJson from "../package.json";
