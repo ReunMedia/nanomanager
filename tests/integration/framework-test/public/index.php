@@ -13,7 +13,11 @@ require __DIR__.'/../vendor/autoload.php';
 
 $app = AppFactory::create();
 
-$app->get('/', function (ServerRequestInterface $request, ResponseInterface $response, $args) {
+$app->get('/', function (
+    ServerRequestInterface $request,
+    ResponseInterface $response,
+    $args
+) {
     $response->getBody()->write(
         file_get_contents(__DIR__.'/index.html')
     );

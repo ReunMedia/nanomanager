@@ -1,7 +1,7 @@
 # Nano File Manager
 
-Nano File Manager (or Nanomanager for short) is a minimalist PHP file manager.
-It can be used to quickly add simple uploads and file management to any PHP
+Nano File Manager (or Nanomanager for short) is a minimalist PHP file manager
+that can be used to quickly add simple uploads and file management to any PHP
 powered website.
 
 > ❗ **Caution**
@@ -77,6 +77,10 @@ $app->any("/admin/nanomanager", function($request, $response) {
 });
 ```
 
+> 💡 **Tip**
+>
+> Check out **tests/integration** directory for additional usage examples.
+
 ## Configuration
 
 ### PHP API configuration
@@ -137,6 +141,10 @@ issues.
 </body>
 ```
 
+> 💡 **Tip**
+>
+> Check out **tests/integration/framework-test** for a complete example.
+
 ### Using `import` in JS
 
 You can `import` Nanomanager in JS to load the custom element. We're using Vue
@@ -163,7 +171,7 @@ const apiUrl = window.location.origin + "/admin/nanomanager";
 You can utilize `$_SERVER` to set URL dynamically when configuring Nanomanager.
 This is useful for development and testing.
 
-> ⚠️ **Warning!**
+> ℹ️ **Important**
 >
 > It is recommended to set URL manually in production instead of relying on
 > `$_SERVER` global. This is also illustrated in the example below.
