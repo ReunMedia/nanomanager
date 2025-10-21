@@ -1,2 +1,37 @@
 # Force LF for all files in repository
 * text=auto
+
+# Limit which files to include in Composer installation.
+#
+# NOTE - This essentially breaks the native `git archive` functionality
+/packages/frontend/src          export-ignore
+/packages/frontend/tests        export-ignore
+
+/packages/php/docker            export-ignore
+/packages/php/tests             export-ignore
+/packages/php/tools             export-ignore
+
+/.moon                          export-ignore
+/.vscode                        export-ignore
+/docs                           export-ignore
+/scripts                        export-ignore
+/tests                          export-ignore
+
+**/bun.lock                     export-ignore
+**/composer.lock                export-ignore
+**/eslint.config.mjs            export-ignore
+**/moon.yml                     export-ignore
+**/prettier.config.mjs          export-ignore
+**/svelte.config.js             export-ignore
+**/tsconfig.app.json            export-ignore
+**/tsconfig.json                export-ignore
+**/tsconfig.node.json           export-ignore
+**/vite.config.ts               export-ignore
+**/box.json                     export-ignore
+**/docker-compose.yaml          export-ignore
+**/phpstan.dist.neon            export-ignore
+**/phpunit.xml                  export-ignore
+**/.editorconfig                export-ignore
+**/.npmpackagejsonlintrc.json   export-ignore
+**/.php-cs-fixer.php            export-ignore
+**/.prettierignore              export-ignore
