@@ -28,3 +28,4 @@ tasks:
       - "scripts/prepare-release.ts"
     inputs:
       - "project://^?group=sources"
+      - "scripts/prepare-release.ts"

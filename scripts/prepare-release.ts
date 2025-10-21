@@ -25,7 +25,7 @@ async function isValidNextVersion(version: string): Promise<boolean> {
 
   // Make sure the version we're about to release is newer than any other
   // version.
-  if (semver.order(version, lastTag) === -1) {
+  if (semver.order(version, lastTag) !== 1) {
     console.error(
       `Version in package.json must be newer than the last tagged release version (${lastTag}). Run 'bun pm version --no-git-tag-version' in project root to bump the version.`,
     );
@@ -62,6 +62,22 @@ async function buildFrontend() {
   await $`bun moon run frontend:build`;
 }
 
+async function commitAndTagChanges(version: string): Promise<number> {
+  let exitCode = 0;
+
+  exitCode = (await $`git add -A`).exitCode;
+
+  if (exitCode === 0) {
+    exitCode = (await $`git commit -m "Release ${version}"`).exitCode;
+  }
+
+  if (exitCode === 0) {
+    exitCode = (await $`git tag -a ${version} -m "Release ${version}"`)
+      .exitCode;
+  }
+  return exitCode;
+}
+
 async function prepareRelease(version: string): Promise<number> {
   // Make sure we're releasing a valid semver version
   if (version === "" || semver.satisfies(version, "*") === false) {
@@ -82,7 +98,9 @@ async function prepareRelease(version: string): Promise<number> {
 
   await buildFrontend();
 
-  return 0;
+  const exitCode = await commitAndTagChanges(version);
+
+  return exitCode;
 }
 
 const version = rootPackageJson.version;
