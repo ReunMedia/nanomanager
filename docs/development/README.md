@@ -31,6 +31,10 @@ This project uses [moon](https://moonrepo.dev/moon) as task runner. Use `bun
 moon query projects` to list all projects and `bun moon project <project>` to
 list tasks for a specific project.
 
+## Git hooks
+
+Git hooks are not enabled by default. Run `bun moon sync hooks` to enable them.
+
 ## Package integration tests
 
 `tests/integration` directory contains manual tests for different methods of

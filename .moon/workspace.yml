@@ -8,3 +8,8 @@ projects:
     - "packages/*"
   sources:
     root: "."
+
+vcs:
+  hooks:
+   pre-commit:
+    - "bun moon :lint --affected --status=staged"
