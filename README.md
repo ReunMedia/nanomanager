@@ -213,3 +213,8 @@ $nanomanager = new Nanomanager(
     "{$urlBase}/admin/nanomanager",
 );
 ```
+
+## Development
+
+See [`docs/development`](docs/development/README.md) for development
+documentation.
