@@ -48,6 +48,9 @@
 
   /*
    * Set reusable theme variables
+   *
+   * Default colors are roughly based on this palette:
+   * https://coolors.co/palette/0d1b2a-1b263b-415a77-778da9-e0e1dd
    */
   .body {
     /* DRY theme toggle insipred by
@@ -55,12 +58,35 @@
     --ON: initial;
     --OFF: ;
 
+    /**
+     * `border-radius` for buttons, inputs, toasts etc.
+     */
     --rounded: 0.5em;
-    /* Colors are roughly based on this palette: https://coolors.co/palette/0d1b2a-1b263b-415a77-778da9-e0e1dd */
-    --color-text: var(--dark, #dfe5ec) var(--light, #0d1b2a);
-    --color-bg: var(--dark, #0d1b2a) var(--light, #e5edf7);
+
+    /**
+     * Border color
+     */
     --color-border: #415a77;
-    --color-highlight: #778da9;
+
+    /**
+     * Background
+     */
+    --bg: var(--dark, #0d1b2a) var(--light, #e5edf7);
+
+    /**
+     * Background for modals and toasts
+     */
+    --bg-modal: var(--bg);
+
+    /**
+     * Highlight (hover) background for buttons, inputs etc.
+     */
+    --bg-highlight: #778da9;
+
+    /**
+     * Text color
+     */
+    --color-text: var(--dark, #dfe5ec) var(--light, #0d1b2a);
   }
 
   /* Dark mode by default */
@@ -165,7 +191,7 @@
 
   :global(button:hover:not(:disabled)),
   :global(input::file-selector-button:hover) {
-    background: var(--color-highlight);
+    background: var(--bg-highlight);
     cursor: pointer;
   }
 
@@ -178,7 +204,7 @@
    ****************/
 
   .body {
-    background: var(--color-bg);
+    background: var(--bg);
     /* https://systemfontstack.com/ */
     font-family:
       -apple-system,

@@ -26,7 +26,7 @@
 
   li {
     margin-top: 1em;
-    background: var(--color-bg);
+    background: var(--bg-modal);
     /* Re-enable pointer events on visible toasts */
     pointer-events: auto;
 

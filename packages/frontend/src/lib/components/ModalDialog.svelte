@@ -31,7 +31,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: var(--color-bg);
+    background: var(--bg-modal);
     box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 8px 0px;
     opacity: 0;
 
