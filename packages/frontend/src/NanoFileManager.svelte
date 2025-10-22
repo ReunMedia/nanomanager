@@ -30,7 +30,7 @@
       : apiUrl;
 </script>
 
-<div class={["body", theme]}>
+<div part="body" class={["body", theme]}>
   <div class="container">
     <main>
       <h1>Nano File Manager</h1>
