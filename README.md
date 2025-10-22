@@ -1,5 +1,8 @@
 # Nano File Manager
 
+[![Supported PHP Version](https://img.shields.io/packagist/dependency-v/reun/nanomanager/PHP?logo=PHP&logoColor=777BB3&color=777BB3)](https://www.php.net/supported-versions.php)
+[![Packagist Version](https://img.shields.io/packagist/v/reun/nanomanager)](https://packagist.org/packages/reun/nanomanager)
+
 Nano File Manager (or Nanomanager for short) is a minimalist PHP file manager
 that can be used to quickly add simple uploads and file management to any PHP
 powered website.
