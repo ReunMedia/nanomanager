@@ -79,7 +79,7 @@ $app->any("/admin/nanomanager", function($request, $response) {
 
 > 💡 **Tip**
 >
-> Check out **tests/integration** directory for additional usage examples.
+> Check out `tests/integration` directory for additional usage examples.
 
 ## Configuration
 
@@ -96,7 +96,7 @@ new Nanomanager(..., createMissingDirectory: false);
 ### Frontend configuration
 
 Frontend is configured with HTML attributes. Check out `Props` interface in
-[NanoFileManager.svelte](packages/frontend/src/NanoFileManager.svelte) for full
+[`NanoFileManager.svelte`](packages/frontend/src/NanoFileManager.svelte) for full
 list of options.
 
 If you're not [embedding
@@ -143,7 +143,7 @@ issues.
 
 > 💡 **Tip**
 >
-> Check out **tests/integration/framework-test** for a complete example.
+> Check out `tests/integration/framework-test` for a complete example.
 
 ### Using `import` in JS
 
@@ -162,6 +162,27 @@ const apiUrl = window.location.origin + "/admin/nanomanager";
 <template>
   <nano-file-manager :api-url="apiUrl"></nano-file-manager>
 </template>
+```
+
+## Frontend customization and theming with CSS
+
+`<nano-file-manager>` exposes its root element as
+[`part`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/part)
+attribute with the name `body`. You can target this element with
+`nano-file-manager::part(body)` CSS selector to set theme variables or use
+custom CSS. See
+[`NanoFileManager.svelte`](packages/frontend/src/NanoFileManager.svelte) for a
+full list of available theme variables and
+[`index.html`](tests/integration/framework-test/public/index.html) in framework
+integration test as an example.
+
+```css
+nano-file-manager::part(body) {
+  --rounded: 2em;
+  --bg: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+  /* You can set different values for dark / light theme */
+  --bg-modal: var(--dark, #0d1b2a) var(--light, #e5edf7);
+}
 ```
 
 ## Additional tips
